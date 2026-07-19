@@ -1,0 +1,53 @@
+<div class="page-header">
+  <h1>My requests &amp; projects</h1>
+</div>
+
+<div class="card">
+  <h2>New service request</h2>
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+  <form class="inline-form" (ngSubmit)="submit()">
+    <label>
+      Describe what you need
+      <textarea name="description" [(ngModel)]="description" required></textarea>
+    </label>
+    <button type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'Submitting…' : 'Submit request' }}
+    </button>
+  </form>
+</div>
+
+<h2>Your requests</h2>
+@if (requests().length === 0) {
+  <p class="empty-state">No service requests yet.</p>
+} @else {
+  <div class="list">
+    @for (request of requests(); track request.id) {
+      <div class="list-item">
+        <div class="meta">
+          <span class="title">{{ request.description }}</span>
+          <span class="subtitle">Submitted {{ request.createdAt | date: 'medium' }}</span>
+        </div>
+        <span [class]="statusClass(request.status)">{{ request.status }}</span>
+      </div>
+    }
+  </div>
+}
+
+<h2>Your projects</h2>
+@if (projects().length === 0) {
+  <p class="empty-state">No active projects yet — once a request is approved, it will show up here.</p>
+} @else {
+  <div class="list">
+    @for (project of projects(); track project.id) {
+      <a class="list-item" [routerLink]="['/projects', project.id]">
+        <div class="meta">
+          <span class="title">{{ project.title }}</span>
+          <span class="subtitle">Updated {{ project.updatedAt | date: 'medium' }}</span>
+        </div>
+        <span [class]="statusClass(project.status)">{{ project.status }}</span>
+      </a>
+    }
+  </div>
+}

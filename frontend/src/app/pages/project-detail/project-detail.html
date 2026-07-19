@@ -1,0 +1,169 @@
+@if (project(); as p) {
+  <div class="page-header">
+    <div>
+      <h1>{{ p.title }}</h1>
+    </div>
+    <span [class]="statusClass(p.status)">{{ p.status }}</span>
+  </div>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <div class="tabs">
+    <button [class.active]="activeTab() === 'messages'" (click)="setTab('messages')">Messages</button>
+    <button [class.active]="activeTab() === 'files'" (click)="setTab('files')">Files</button>
+    <button [class.active]="activeTab() === 'deliverables'" (click)="setTab('deliverables')">Deliverables</button>
+    <button [class.active]="activeTab() === 'invoices'" (click)="setTab('invoices')">Invoices</button>
+  </div>
+
+  @if (activeTab() === 'messages') {
+    <div class="card">
+      <form class="inline-form" (ngSubmit)="sendMessage()">
+        <label>
+          Message
+          <input type="text" name="newMessage" [(ngModel)]="newMessage" required />
+        </label>
+        <button type="submit">Send</button>
+      </form>
+    </div>
+
+    @if (messages().length === 0) {
+      <p class="empty-state">No messages yet.</p>
+    } @else {
+      <div class="list">
+        @for (message of messages(); track message.id) {
+          <div class="list-item">
+            <div class="meta">
+              <span class="title">{{ message.content }}</span>
+              <span class="subtitle">{{ message.createdAt | date: 'medium' }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+
+  @if (activeTab() === 'files') {
+    <div class="card">
+      <form class="inline-form" (ngSubmit)="addFile()">
+        <label>
+          Filename
+          <input type="text" name="filename" [(ngModel)]="newFile.filename" required />
+        </label>
+        <label>
+          URL
+          <input type="text" name="url" [(ngModel)]="newFile.url" required />
+        </label>
+        <label>
+          Type
+          <input type="text" name="mimeType" [(ngModel)]="newFile.mimeType" required placeholder="application/pdf" />
+        </label>
+        <label>
+          Size (bytes)
+          <input type="number" name="size" [(ngModel)]="newFile.size" required />
+        </label>
+        <button type="submit">Add file</button>
+      </form>
+    </div>
+
+    @if (files().length === 0) {
+      <p class="empty-state">No files yet.</p>
+    } @else {
+      <div class="list">
+        @for (file of files(); track file.id) {
+          <a class="list-item" [href]="file.url" target="_blank" rel="noopener">
+            <div class="meta">
+              <span class="title">{{ file.filename }}</span>
+              <span class="subtitle">{{ file.mimeType }} · {{ file.size }} bytes</span>
+            </div>
+          </a>
+        }
+      </div>
+    }
+  }
+
+  @if (activeTab() === 'deliverables') {
+    @if (isAdmin()) {
+      <div class="card">
+        <form class="inline-form" (ngSubmit)="createDeliverable()">
+          <label>
+            Title
+            <input type="text" name="deliverableTitle" [(ngModel)]="newDeliverable.title" required />
+          </label>
+          <label>
+            Description
+            <input type="text" name="deliverableDescription" [(ngModel)]="newDeliverable.description" />
+          </label>
+          <button type="submit">Add deliverable</button>
+        </form>
+      </div>
+    }
+
+    @if (deliverables().length === 0) {
+      <p class="empty-state">No deliverables yet.</p>
+    } @else {
+      <div class="list">
+        @for (deliverable of deliverables(); track deliverable.id) {
+          <div class="list-item">
+            <div class="meta">
+              <span class="title">{{ deliverable.title }}</span>
+              @if (deliverable.description) {
+                <span class="subtitle">{{ deliverable.description }}</span>
+              }
+            </div>
+            <div class="actions">
+              <span [class]="statusClass(deliverable.status)">{{ deliverable.status }}</span>
+              @if (isAdmin()) {
+                <button class="secondary" (click)="toggleDeliverable(deliverable)">
+                  Mark {{ deliverable.status === 'PENDING' ? 'delivered' : 'pending' }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+
+  @if (activeTab() === 'invoices') {
+    @if (isAdmin()) {
+      <div class="card">
+        <form class="inline-form" (ngSubmit)="createInvoice()">
+          <label>
+            Amount
+            <input type="number" name="invoiceAmount" [(ngModel)]="newInvoice.amount" required min="0" step="0.01" />
+          </label>
+          <button type="submit">Add invoice</button>
+        </form>
+      </div>
+    }
+
+    @if (invoices().length === 0) {
+      <p class="empty-state">No invoices yet.</p>
+    } @else {
+      <div class="list">
+        @for (invoice of invoices(); track invoice.id) {
+          <div class="list-item">
+            <div class="meta">
+              <span class="title">${{ invoice.amount }}</span>
+              @if (invoice.dueDate) {
+                <span class="subtitle">Due {{ invoice.dueDate | date: 'mediumDate' }}</span>
+              }
+            </div>
+            <div class="actions">
+              <span [class]="statusClass(invoice.status)">{{ invoice.status }}</span>
+              @if (isAdmin()) {
+                <button class="secondary" (click)="markInvoicePaid(invoice)">
+                  Mark {{ invoice.status === 'PAID' ? 'unpaid' : 'paid' }}
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+} @else {
+  <p class="empty-state">Loading…</p>
+}

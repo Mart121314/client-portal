@@ -1,0 +1,164 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+}
+
+model User {
+  id  String  @id @default (uuid())
+  email String  @unique
+  passwordHash String
+  role  Role @default(CLIENT)
+
+  isActive  Boolean @default(true)
+  isVerified Boolean  @default(false)
+
+  resetToken String? 
+  resetTokenExpiry DateTime? 
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  serviceRequests ServiceRequest[]
+  projects Project[]
+  uploadedFiles FileUpload[]
+  messages Message[]
+
+  @@index([role])
+}
+
+enum ServiceRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum DeliverableStatus {
+  PENDING
+  DELIVERED
+}
+
+enum InvoiceStatus {
+  UNPAID
+  PAID
+  OVERDUE
+}
+
+model ServiceRequest {
+  id          String               @id @default(uuid())
+  description String
+  status      ServiceRequestStatus @default(PENDING)
+
+  client   User   @relation(fields: [clientId], references: [id])
+  clientId String
+
+  project Project?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id          String        @id @default(uuid())
+  title       String
+  description String?
+  status      ProjectStatus @default(ACTIVE)
+
+  client   User   @relation(fields: [clientId], references: [id])
+  clientId String
+
+  serviceRequest   ServiceRequest? @relation(fields: [serviceRequestId], references: [id])
+  serviceRequestId String?         @unique
+
+  files        FileUpload[]
+  messages     Message[]
+  deliverables Deliverable[]
+  invoices     Invoice[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FileUpload {
+  id       String @id @default(uuid())
+  filename String
+  url      String
+  mimeType String
+  size     Int
+
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+
+  uploadedBy   User   @relation(fields: [uploadedById], references: [id])
+  uploadedById String
+
+  createdAt DateTime @default(now())
+}
+
+model Message {
+  id      String @id @default(uuid())
+  content String
+
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+
+  sender   User   @relation(fields: [senderId], references: [id])
+  senderId String
+
+  createdAt DateTime @default(now())
+}
+
+model Deliverable {
+  id          String            @id @default(uuid())
+  title       String
+  description String?
+  status      DeliverableStatus @default(PENDING)
+  dueDate     DateTime?
+
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Invoice {
+  id      String        @id @default(uuid())
+  amount  Decimal
+  status  InvoiceStatus @default(UNPAID)
+  dueDate DateTime?
+
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RevokedToken {
+  id        String   @id @default(uuid())
+  jti       String   @unique
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+}
