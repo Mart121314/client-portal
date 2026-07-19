@@ -29,4 +29,8 @@ export class ServiceRequestService {
   reject(id: string): Observable<ServiceRequest> {
     return this.http.patch<ServiceRequest>(`${this.baseUrl}/${id}/reject`, {});
   }
+
+  reopen(id: string): Observable<ServiceRequest> {
+    return this.http.patch<ServiceRequest>(`${this.baseUrl}/${id}/reopen`, {});
+  }
 }

@@ -7,6 +7,7 @@ import {
   getServiceRequestById,
   approveServiceRequest,
   rejectServiceRequest,
+  reopenServiceRequest,
 } from "../services/serviceRequestService";
 
 export async function create(req: AuthRequest, res: Response) {
@@ -49,5 +50,10 @@ export async function approve(req: AuthRequest, res: Response) {
 
 export async function reject(req: AuthRequest, res: Response) {
   const request = await rejectServiceRequest(req.params.id);
+  res.json(request);
+}
+
+export async function reopen(req: AuthRequest, res: Response) {
+  const request = await reopenServiceRequest(req.params.id);
   res.json(request);
 }

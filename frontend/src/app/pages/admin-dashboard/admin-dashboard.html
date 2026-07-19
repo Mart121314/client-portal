@@ -6,19 +6,29 @@
   <p class="error">{{ error() }}</p>
 }
 
-<h2>Service requests</h2>
-@if (requests().length === 0) {
-  <p class="empty-state">No service requests.</p>
-} @else {
-  <div class="list">
-    @for (request of requests(); track request.id) {
-      <div class="list-item">
-        <div class="meta">
-          <span class="title">{{ request.description }}</span>
-          <span class="subtitle">Submitted {{ request.createdAt | date: 'medium' }}</span>
-        </div>
+<div class="tabs">
+  <button [class.active]="activeTab() === 'PENDING'" (click)="setTab('PENDING')">
+    Pending ({{ pendingRequests().length }})
+  </button>
+  <button [class.active]="activeTab() === 'APPROVED'" (click)="setTab('APPROVED')">
+    Approved ({{ approvedRequests().length }})
+  </button>
+  <button [class.active]="activeTab() === 'REJECTED'" (click)="setTab('REJECTED')">
+    Declined ({{ rejectedRequests().length }})
+  </button>
+</div>
 
-        @if (request.status === 'PENDING') {
+@if (activeTab() === 'PENDING') {
+  @if (pendingRequests().length === 0) {
+    <p class="empty-state">No pending requests.</p>
+  } @else {
+    <div class="list">
+      @for (request of pendingRequests(); track request.id) {
+        <div class="list-item">
+          <div class="meta">
+            <span class="title">{{ request.description }}</span>
+            <span class="subtitle">Submitted {{ request.createdAt | date: 'medium' }}</span>
+          </div>
           <div class="actions">
             <input
               type="text"
@@ -27,14 +37,50 @@
               (ngModelChange)="setTitle(request.id, $event)"
             />
             <button (click)="approve(request)">Approve</button>
-            <button class="danger" (click)="reject(request)">Reject</button>
+            <button class="danger" (click)="reject(request)">Decline</button>
           </div>
-        } @else {
-          <span [class]="statusClass(request.status)">{{ request.status }}</span>
-        }
-      </div>
-    }
-  </div>
+        </div>
+      }
+    </div>
+  }
+}
+
+@if (activeTab() === 'APPROVED') {
+  @if (approvedRequests().length === 0) {
+    <p class="empty-state">No approved requests yet.</p>
+  } @else {
+    <div class="list">
+      @for (request of approvedRequests(); track request.id) {
+        <div class="list-item">
+          <div class="meta">
+            <span class="title">{{ request.description }}</span>
+            <span class="subtitle">Submitted {{ request.createdAt | date: 'medium' }}</span>
+          </div>
+          @if (projectFor(request.id); as project) {
+            <a [routerLink]="['/projects', project.id]">View project →</a>
+          }
+        </div>
+      }
+    </div>
+  }
+}
+
+@if (activeTab() === 'REJECTED') {
+  @if (rejectedRequests().length === 0) {
+    <p class="empty-state">No declined requests.</p>
+  } @else {
+    <div class="list">
+      @for (request of rejectedRequests(); track request.id) {
+        <div class="list-item">
+          <div class="meta">
+            <span class="title">{{ request.description }}</span>
+            <span class="subtitle">Submitted {{ request.createdAt | date: 'medium' }}</span>
+          </div>
+          <button class="secondary" (click)="reopen(request)">Reopen</button>
+        </div>
+      }
+    </div>
+  }
 }
 
 <h2>Projects</h2>

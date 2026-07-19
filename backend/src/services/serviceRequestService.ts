@@ -7,11 +7,16 @@ export async function createServiceRequest(clientId: string, description: string
 }
 
 export async function getServiceRequestsForClient(clientId: string) {
-  return prisma.serviceRequest.findMany({ where: { clientId } });
+  return prisma.serviceRequest.findMany({
+    where: { clientId },
+    orderBy: { createdAt: "desc" },
+  });
 }
 
 export async function getAllServiceRequests() {
-  return prisma.serviceRequest.findMany();
+  return prisma.serviceRequest.findMany({
+    orderBy: { createdAt: "desc" },
+  });
 }
 
 export async function getServiceRequestById(id: string) {
@@ -43,5 +48,12 @@ export async function rejectServiceRequest(id: string) {
   return prisma.serviceRequest.update({
     where: { id },
     data: { status: "REJECTED" },
+  });
+}
+
+export async function reopenServiceRequest(id: string) {
+  return prisma.serviceRequest.update({
+    where: { id },
+    data: { status: "PENDING" },
   });
 }

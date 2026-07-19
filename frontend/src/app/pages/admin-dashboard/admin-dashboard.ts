@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
@@ -6,6 +6,8 @@ import { ServiceRequestService } from '../../core/services/service-request.servi
 import { ProjectService } from '../../core/services/project.service';
 import { ServiceRequest } from '../../core/models/service-request.model';
 import { Project } from '../../core/models/project.model';
+
+type RequestTab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -18,12 +20,21 @@ export class AdminDashboard implements OnInit {
 
   requests = signal<ServiceRequest[]>([]);
   projects = signal<Project[]>([]);
+  activeTab = signal<RequestTab>('PENDING');
   private titleDrafts = new Map<string, string>();
   error = signal<string | null>(null);
+
+  pendingRequests = computed(() => this.requests().filter((r) => r.status === 'PENDING'));
+  approvedRequests = computed(() => this.requests().filter((r) => r.status === 'APPROVED'));
+  rejectedRequests = computed(() => this.requests().filter((r) => r.status === 'REJECTED'));
 
   ngOnInit(): void {
     this.loadRequests();
     this.loadProjects();
+  }
+
+  setTab(tab: RequestTab): void {
+    this.activeTab.set(tab);
   }
 
   loadRequests(): void {
@@ -40,6 +51,10 @@ export class AdminDashboard implements OnInit {
 
   setTitle(requestId: string, value: string): void {
     this.titleDrafts.set(requestId, value);
+  }
+
+  projectFor(requestId: string): Project | undefined {
+    return this.projects().find((p) => p.serviceRequestId === requestId);
   }
 
   approve(request: ServiceRequest): void {
@@ -62,6 +77,10 @@ export class AdminDashboard implements OnInit {
 
   reject(request: ServiceRequest): void {
     this.serviceRequestService.reject(request.id).subscribe(() => this.loadRequests());
+  }
+
+  reopen(request: ServiceRequest): void {
+    this.serviceRequestService.reopen(request.id).subscribe(() => this.loadRequests());
   }
 
   statusClass(status: string): string {
