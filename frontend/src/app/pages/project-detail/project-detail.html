@@ -1,13 +1,46 @@
 @if (project(); as p) {
-  <div class="page-header">
-    <div>
-      <h1>{{ p.title }}</h1>
-    </div>
-    <span [class]="statusClass(p.status)">{{ p.status }}</span>
-  </div>
-
   @if (error()) {
     <p class="error">{{ error() }}</p>
+  }
+
+  @if (isEditing()) {
+    <div class="card">
+      <form class="inline-form" (ngSubmit)="saveEdit()">
+        <label>
+          Title
+          <input type="text" name="editTitle" [(ngModel)]="editForm.title" required />
+        </label>
+        <label>
+          Description
+          <input type="text" name="editDescription" [(ngModel)]="editForm.description" />
+        </label>
+        <label>
+          Status
+          <select name="editStatus" [(ngModel)]="editForm.status">
+            <option value="ACTIVE">Active</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+        </label>
+        <button type="submit">Save</button>
+        <button type="button" class="secondary" (click)="cancelEdit()">Cancel</button>
+      </form>
+    </div>
+  } @else {
+    <div class="page-header">
+      <div>
+        <h1>{{ p.title }}</h1>
+        @if (p.description) {
+          <p class="subtitle">{{ p.description }}</p>
+        }
+      </div>
+      <div class="actions">
+        <span [class]="statusClass(p.status)">{{ p.status }}</span>
+        @if (isAdmin()) {
+          <button class="secondary" (click)="startEdit()">Edit</button>
+        }
+      </div>
+    </div>
   }
 
   <div class="tabs">

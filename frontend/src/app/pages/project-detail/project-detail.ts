@@ -34,6 +34,9 @@ export class ProjectDetail implements OnInit {
 
   isAdmin = computed(() => this.authService.currentUser()?.role === 'ADMIN');
 
+  isEditing = signal(false);
+  editForm = { title: '', description: '', status: 'ACTIVE' };
+
   newMessage = '';
   newFile = { filename: '', url: '', mimeType: '', size: 0 };
   newDeliverable = { title: '', description: '' };
@@ -42,11 +45,43 @@ export class ProjectDetail implements OnInit {
   error = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.projectService.getOne(this.projectId).subscribe((project) => this.project.set(project));
+    this.loadProject();
     this.loadMessages();
     this.loadFiles();
     this.loadDeliverables();
     this.loadInvoices();
+  }
+
+  loadProject(): void {
+    this.projectService.getOne(this.projectId).subscribe((project) => this.project.set(project));
+  }
+
+  startEdit(): void {
+    const project = this.project();
+    if (!project) return;
+
+    this.editForm = {
+      title: project.title,
+      description: project.description ?? '',
+      status: project.status,
+    };
+    this.isEditing.set(true);
+  }
+
+  cancelEdit(): void {
+    this.isEditing.set(false);
+  }
+
+  saveEdit(): void {
+    if (!this.editForm.title.trim()) return;
+
+    this.projectService.update(this.projectId, this.editForm).subscribe({
+      next: (project) => {
+        this.project.set(project);
+        this.isEditing.set(false);
+      },
+      error: (err) => this.error.set(err?.error?.error ?? 'Could not update project'),
+    });
   }
 
   setTab(tab: Tab): void {

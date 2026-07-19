@@ -21,6 +21,10 @@ export class ProjectService {
     return this.http.get<Project>(`${this.baseUrl}/${id}`);
   }
 
+  update(id: string, data: { title?: string; description?: string; status?: string }): Observable<Project> {
+    return this.http.patch<Project>(`${this.baseUrl}/${id}`, data);
+  }
+
   listFiles(projectId: string): Observable<FileUpload[]> {
     return this.http.get<FileUpload[]>(`${this.baseUrl}/${projectId}/files`);
   }

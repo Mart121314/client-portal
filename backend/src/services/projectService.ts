@@ -16,3 +16,10 @@ export async function listAllProjects() {
 export async function getProjectById(id: string) {
   return prisma.project.findUnique({ where: { id } });
 }
+
+export async function updateProject(
+  id: string,
+  data: { title?: string; description?: string; status?: "ACTIVE" | "COMPLETED" | "CANCELLED" }
+) {
+  return prisma.project.update({ where: { id }, data });
+}
