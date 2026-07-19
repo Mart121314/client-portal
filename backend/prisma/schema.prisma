@@ -79,10 +79,13 @@ model ServiceRequest {
 }
 
 model Project {
-  id          String        @id @default(uuid())
-  title       String
-  description String?
-  status      ProjectStatus @default(ACTIVE)
+  id              String        @id @default(uuid())
+  title           String
+  description     String?
+  status          ProjectStatus @default(ACTIVE)
+  notes           String?
+  progressPercent Int           @default(0)
+  eta             DateTime?
 
   client   User   @relation(fields: [clientId], references: [id])
   clientId String

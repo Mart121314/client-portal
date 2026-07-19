@@ -35,7 +35,14 @@ export class ProjectDetail implements OnInit {
   isAdmin = computed(() => this.authService.currentUser()?.role === 'ADMIN');
 
   isEditing = signal(false);
-  editForm = { title: '', description: '', status: 'ACTIVE' };
+  editForm = {
+    title: '',
+    description: '',
+    status: 'ACTIVE',
+    notes: '',
+    progressPercent: 0,
+    eta: '',
+  };
 
   newMessage = '';
   newFile = { filename: '', url: '', mimeType: '', size: 0 };
@@ -64,6 +71,9 @@ export class ProjectDetail implements OnInit {
       title: project.title,
       description: project.description ?? '',
       status: project.status,
+      notes: project.notes ?? '',
+      progressPercent: project.progressPercent,
+      eta: project.eta ? project.eta.slice(0, 10) : '',
     };
     this.isEditing.set(true);
   }

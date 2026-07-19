@@ -17,7 +17,14 @@ export async function getOne(req: ProjectRequest, res: Response) {
 }
 
 export async function update(req: ProjectRequest, res: Response) {
-  const { title, description, status } = req.body;
-  const project = await updateProject(req.params.projectId, { title, description, status });
+  const { title, description, status, notes, progressPercent, eta } = req.body;
+  const project = await updateProject(req.params.projectId, {
+    title,
+    description,
+    status,
+    notes,
+    progressPercent,
+    eta,
+  });
   res.json(project);
 }

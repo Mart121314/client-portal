@@ -24,6 +24,16 @@ export class AdminDashboard implements OnInit {
   private titleDrafts = new Map<string, string>();
   error = signal<string | null>(null);
 
+  editingProjectId = signal<string | null>(null);
+  projectEditForm = {
+    title: '',
+    description: '',
+    status: 'ACTIVE',
+    notes: '',
+    progressPercent: 0,
+    eta: '',
+  };
+
   pendingRequests = computed(() => this.requests().filter((r) => r.status === 'PENDING'));
   approvedRequests = computed(() => this.requests().filter((r) => r.status === 'APPROVED'));
   rejectedRequests = computed(() => this.requests().filter((r) => r.status === 'REJECTED'));
@@ -81,6 +91,34 @@ export class AdminDashboard implements OnInit {
 
   reopen(request: ServiceRequest): void {
     this.serviceRequestService.reopen(request.id).subscribe(() => this.loadRequests());
+  }
+
+  startEditProject(project: Project): void {
+    this.projectEditForm = {
+      title: project.title,
+      description: project.description ?? '',
+      status: project.status,
+      notes: project.notes ?? '',
+      progressPercent: project.progressPercent,
+      eta: project.eta ? project.eta.slice(0, 10) : '',
+    };
+    this.editingProjectId.set(project.id);
+  }
+
+  cancelEditProject(): void {
+    this.editingProjectId.set(null);
+  }
+
+  saveEditProject(projectId: string): void {
+    if (!this.projectEditForm.title.trim()) return;
+
+    this.projectService.update(projectId, this.projectEditForm).subscribe({
+      next: () => {
+        this.editingProjectId.set(null);
+        this.loadProjects();
+      },
+      error: (err) => this.error.set(err?.error?.error ?? 'Could not update project'),
+    });
   }
 
   statusClass(status: string): string {

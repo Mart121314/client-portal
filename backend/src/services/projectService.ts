@@ -19,7 +19,20 @@ export async function getProjectById(id: string) {
 
 export async function updateProject(
   id: string,
-  data: { title?: string; description?: string; status?: "ACTIVE" | "COMPLETED" | "CANCELLED" }
+  data: {
+    title?: string;
+    description?: string;
+    status?: "ACTIVE" | "COMPLETED" | "CANCELLED";
+    notes?: string;
+    progressPercent?: number;
+    eta?: string;
+  }
 ) {
-  return prisma.project.update({ where: { id }, data });
+  return prisma.project.update({
+    where: { id },
+    data: {
+      ...data,
+      eta: data.eta === undefined ? undefined : data.eta ? new Date(data.eta) : null,
+    },
+  });
 }

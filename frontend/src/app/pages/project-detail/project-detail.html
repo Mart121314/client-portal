@@ -22,6 +22,18 @@
             <option value="CANCELLED">Cancelled</option>
           </select>
         </label>
+        <label>
+          Progress (%)
+          <input type="number" name="editProgress" [(ngModel)]="editForm.progressPercent" min="0" max="100" />
+        </label>
+        <label>
+          ETA
+          <input type="date" name="editEta" [(ngModel)]="editForm.eta" />
+        </label>
+        <label>
+          Notes
+          <textarea name="editNotes" [(ngModel)]="editForm.notes"></textarea>
+        </label>
         <button type="submit">Save</button>
         <button type="button" class="secondary" (click)="cancelEdit()">Cancel</button>
       </form>
@@ -33,6 +45,12 @@
         @if (p.description) {
           <p class="subtitle">{{ p.description }}</p>
         }
+        <p class="subtitle">
+          {{ p.progressPercent }}% done
+          @if (p.eta) {
+            · ETA {{ p.eta | date: 'mediumDate' }}
+          }
+        </p>
       </div>
       <div class="actions">
         <span [class]="statusClass(p.status)">{{ p.status }}</span>
@@ -41,6 +59,13 @@
         }
       </div>
     </div>
+
+    @if (isAdmin() && p.notes) {
+      <div class="card">
+        <p class="subtitle">Internal notes</p>
+        <p>{{ p.notes }}</p>
+      </div>
+    }
   }
 
   <div class="tabs">

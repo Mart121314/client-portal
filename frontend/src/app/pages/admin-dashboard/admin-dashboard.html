@@ -89,13 +89,65 @@
 } @else {
   <div class="list">
     @for (project of projects(); track project.id) {
-      <a class="list-item" [routerLink]="['/projects', project.id]">
-        <div class="meta">
-          <span class="title">{{ project.title }}</span>
-          <span class="subtitle">Updated {{ project.updatedAt | date: 'medium' }}</span>
+      @if (editingProjectId() === project.id) {
+        <div class="card">
+          <form class="inline-form" (ngSubmit)="saveEditProject(project.id)">
+            <label>
+              Title
+              <input type="text" name="title-{{ project.id }}" [(ngModel)]="projectEditForm.title" required />
+            </label>
+            <label>
+              Description
+              <input type="text" name="description-{{ project.id }}" [(ngModel)]="projectEditForm.description" />
+            </label>
+            <label>
+              Status
+              <select name="status-{{ project.id }}" [(ngModel)]="projectEditForm.status">
+                <option value="ACTIVE">Active</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELLED">Cancelled</option>
+              </select>
+            </label>
+            <label>
+              Progress (%)
+              <input
+                type="number"
+                name="progress-{{ project.id }}"
+                [(ngModel)]="projectEditForm.progressPercent"
+                min="0"
+                max="100"
+              />
+            </label>
+            <label>
+              ETA
+              <input type="date" name="eta-{{ project.id }}" [(ngModel)]="projectEditForm.eta" />
+            </label>
+            <label>
+              Notes
+              <textarea name="notes-{{ project.id }}" [(ngModel)]="projectEditForm.notes"></textarea>
+            </label>
+            <button type="submit">Save</button>
+            <button type="button" class="secondary" (click)="cancelEditProject()">Cancel</button>
+          </form>
         </div>
-        <span [class]="statusClass(project.status)">{{ project.status }}</span>
-      </a>
+      } @else {
+        <div class="list-item">
+          <div class="meta">
+            <span class="title">{{ project.title }}</span>
+            <span class="subtitle">
+              {{ project.progressPercent }}% done
+              @if (project.eta) {
+                · ETA {{ project.eta | date: 'mediumDate' }}
+              }
+            </span>
+          </div>
+          <div class="actions">
+            <span [class]="statusClass(project.status)">{{ project.status }}</span>
+            <button class="secondary" (click)="startEditProject(project)">Edit</button>
+            <a [routerLink]="['/projects', project.id]">View →</a>
+          </div>
+        </div>
+      }
     }
   </div>
 }

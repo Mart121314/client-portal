@@ -21,7 +21,17 @@ export class ProjectService {
     return this.http.get<Project>(`${this.baseUrl}/${id}`);
   }
 
-  update(id: string, data: { title?: string; description?: string; status?: string }): Observable<Project> {
+  update(
+    id: string,
+    data: {
+      title?: string;
+      description?: string;
+      status?: string;
+      notes?: string;
+      progressPercent?: number;
+      eta?: string;
+    },
+  ): Observable<Project> {
     return this.http.patch<Project>(`${this.baseUrl}/${id}`, data);
   }
 
