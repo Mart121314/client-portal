@@ -1,5 +1,5 @@
 <div class="page-header">
-  <h1>Admin overview</h1>
+  <h1>Admin-oversikt</h1>
 </div>
 
 @if (error()) {
@@ -8,36 +8,36 @@
 
 <div class="tabs">
   <button [class.active]="activeTab() === 'PENDING'" (click)="setTab('PENDING')">
-    Pending ({{ pendingRequests().length }})
+    Venter ({{ pendingRequests().length }})
   </button>
   <button [class.active]="activeTab() === 'APPROVED'" (click)="setTab('APPROVED')">
-    Approved ({{ approvedRequests().length }})
+    Godkjent ({{ approvedRequests().length }})
   </button>
   <button [class.active]="activeTab() === 'REJECTED'" (click)="setTab('REJECTED')">
-    Declined ({{ rejectedRequests().length }})
+    Avslått ({{ rejectedRequests().length }})
   </button>
 </div>
 
 @if (activeTab() === 'PENDING') {
   @if (pendingRequests().length === 0) {
-    <p class="empty-state">No pending requests.</p>
+    <p class="empty-state">Ingen ventende forespørsler.</p>
   } @else {
     <div class="list">
       @for (request of pendingRequests(); track request.id) {
         <div class="list-item">
           <div class="meta">
             <span class="title">{{ request.description }}</span>
-            <span class="subtitle">Submitted {{ request.createdAt | date: 'medium' }}</span>
+            <span class="subtitle">Sendt inn {{ request.createdAt | date: 'medium' }}</span>
           </div>
           <div class="actions">
             <input
               type="text"
-              placeholder="Project title"
+              placeholder="Prosjekttittel"
               [ngModel]="titleFor(request.id)"
               (ngModelChange)="setTitle(request.id, $event)"
             />
-            <button (click)="approve(request)">Approve</button>
-            <button class="danger" (click)="reject(request)">Decline</button>
+            <button (click)="approve(request)">Godkjenn</button>
+            <button class="danger" (click)="reject(request)">Avslå</button>
           </div>
         </div>
       }
@@ -47,17 +47,17 @@
 
 @if (activeTab() === 'APPROVED') {
   @if (approvedRequests().length === 0) {
-    <p class="empty-state">No approved requests yet.</p>
+    <p class="empty-state">Ingen godkjente forespørsler ennå.</p>
   } @else {
     <div class="list">
       @for (request of approvedRequests(); track request.id) {
         <div class="list-item">
           <div class="meta">
             <span class="title">{{ request.description }}</span>
-            <span class="subtitle">Submitted {{ request.createdAt | date: 'medium' }}</span>
+            <span class="subtitle">Sendt inn {{ request.createdAt | date: 'medium' }}</span>
           </div>
           @if (projectFor(request.id); as project) {
-            <a [routerLink]="['/projects', project.id]">View project →</a>
+            <a [routerLink]="['/projects', project.id]">→</a>
           }
         </div>
       }
@@ -67,25 +67,25 @@
 
 @if (activeTab() === 'REJECTED') {
   @if (rejectedRequests().length === 0) {
-    <p class="empty-state">No declined requests.</p>
+    <p class="empty-state">Ingen avslåtte forespørsler.</p>
   } @else {
     <div class="list">
       @for (request of rejectedRequests(); track request.id) {
         <div class="list-item">
           <div class="meta">
             <span class="title">{{ request.description }}</span>
-            <span class="subtitle">Submitted {{ request.createdAt | date: 'medium' }}</span>
+            <span class="subtitle">Sendt inn {{ request.createdAt | date: 'medium' }}</span>
           </div>
-          <button class="secondary" (click)="reopen(request)">Reopen</button>
+          <button class="secondary" (click)="reopen(request)">Gjenåpne</button>
         </div>
       }
     </div>
   }
 }
 
-<h2>Projects</h2>
+<h2>Prosjekter</h2>
 @if (projects().length === 0) {
-  <p class="empty-state">No projects yet.</p>
+  <p class="empty-state">Ingen prosjekter ennå.</p>
 } @else {
   <div class="list">
     @for (project of projects(); track project.id) {
@@ -93,23 +93,23 @@
         <div class="card">
           <form class="inline-form" (ngSubmit)="saveEditProject(project.id)">
             <label>
-              Title
+              Tittel
               <input type="text" name="title-{{ project.id }}" [(ngModel)]="projectEditForm.title" required />
             </label>
             <label>
-              Description
+              Beskrivelse
               <input type="text" name="description-{{ project.id }}" [(ngModel)]="projectEditForm.description" />
             </label>
             <label>
               Status
               <select name="status-{{ project.id }}" [(ngModel)]="projectEditForm.status">
-                <option value="ACTIVE">Active</option>
-                <option value="COMPLETED">Completed</option>
-                <option value="CANCELLED">Cancelled</option>
+                <option value="ACTIVE">Aktiv</option>
+                <option value="COMPLETED">Fullført</option>
+                <option value="CANCELLED">Avbrutt</option>
               </select>
             </label>
             <label>
-              Progress (%)
+              Fremdrift (%)
               <input
                 type="number"
                 name="progress-{{ project.id }}"
@@ -119,19 +119,19 @@
               />
             </label>
             <label>
-              ETA
+              Forventet ferdig
               <input type="date" name="eta-{{ project.id }}" [(ngModel)]="projectEditForm.eta" />
             </label>
             <label>
-              Notes (visible to the customer)
+              Notater (synlig for kunden)
               <textarea name="customer-notes-{{ project.id }}" [(ngModel)]="projectEditForm.customerNotes"></textarea>
             </label>
             <label>
-              Internal notes (admin only)
+              Interne notater (kun admin)
               <textarea name="internal-notes-{{ project.id }}" [(ngModel)]="projectEditForm.internalNotes"></textarea>
             </label>
-            <button type="submit">Save</button>
-            <button type="button" class="secondary" (click)="cancelEditProject()">Cancel</button>
+            <button type="submit">Lagre</button>
+            <button type="button" class="secondary" (click)="cancelEditProject()">Avbryt</button>
           </form>
         </div>
       } @else {
@@ -139,19 +139,19 @@
           <div class="meta">
             <span class="title">{{ project.title }}</span>
             <span class="subtitle">
-              {{ project.progressPercent }}% done
+              {{ project.progressPercent }}% ferdig
               @if (project.eta) {
-                · ETA {{ project.eta | date: 'mediumDate' }}
+                · frist {{ project.eta | date: 'mediumDate' }}
               }
               @if (project.status === 'CANCELLED' && project.cancelledAt) {
-                · removed on {{ removalDate(project.cancelledAt) | date: 'mediumDate' }}
+                · fjernes {{ removalDate(project.cancelledAt) | date: 'mediumDate' }}
               }
             </span>
           </div>
           <div class="actions">
-            <span [class]="statusClass(project.status)">{{ project.status }}</span>
-            <button class="secondary" (click)="startEditProject(project)">Edit</button>
-            <a [routerLink]="['/projects', project.id]">View →</a>
+            <span [class]="statusClass(project.status)">{{ project.status | statusLabel }}</span>
+            <button class="secondary" (click)="startEditProject(project)">Rediger</button>
+            <a [routerLink]="['/projects', project.id]">→</a>
           </div>
         </div>
       }

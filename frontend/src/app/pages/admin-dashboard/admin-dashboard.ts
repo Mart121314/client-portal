@@ -6,12 +6,13 @@ import { ServiceRequestService } from '../../core/services/service-request.servi
 import { ProjectService } from '../../core/services/project.service';
 import { ServiceRequest } from '../../core/models/service-request.model';
 import { Project } from '../../core/models/project.model';
+import { StatusLabelPipe } from '../../core/pipes/status-label.pipe';
 
 type RequestTab = 'PENDING' | 'APPROVED' | 'REJECTED';
 
 @Component({
   selector: 'app-admin-dashboard',
-  imports: [RouterLink, FormsModule, DatePipe],
+  imports: [RouterLink, FormsModule, DatePipe, StatusLabelPipe],
   templateUrl: './admin-dashboard.html',
 })
 export class AdminDashboard implements OnInit {
@@ -71,7 +72,7 @@ export class AdminDashboard implements OnInit {
   approve(request: ServiceRequest): void {
     const title = this.titleFor(request.id).trim();
     if (!title) {
-      this.error.set('Enter a project title before approving.');
+      this.error.set('Skriv inn en prosjekttittel før du godkjenner.');
       return;
     }
 
@@ -82,7 +83,7 @@ export class AdminDashboard implements OnInit {
         this.loadRequests();
         this.loadProjects();
       },
-      error: (err) => this.error.set(err?.error?.error ?? 'Could not approve request'),
+      error: (err) => this.error.set(err?.error?.error ?? 'Kunne ikke godkjenne forespørsel'),
     });
   }
 
@@ -119,7 +120,7 @@ export class AdminDashboard implements OnInit {
         this.editingProjectId.set(null);
         this.loadProjects();
       },
-      error: (err) => this.error.set(err?.error?.error ?? 'Could not update project'),
+      error: (err) => this.error.set(err?.error?.error ?? 'Kunne ikke oppdatere prosjekt'),
     });
   }
 

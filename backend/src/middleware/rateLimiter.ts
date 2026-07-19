@@ -15,6 +15,6 @@ export const authLimiter = rateLimit({
   limit: 20,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { error: "Too many attempts, please try again later" },
+  message: { error: "For mange forsøk, prøv igjen senere" },
   skip: skipInTests,
 });

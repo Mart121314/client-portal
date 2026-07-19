@@ -9,11 +9,11 @@ export interface ProjectRequest extends AuthRequest {
 export async function requireProjectAccess(req: ProjectRequest, res: Response, next: NextFunction) {
   const project = await prisma.project.findUnique({ where: { id: req.params.projectId } });
   if (!project) {
-    return res.status(404).json({ error: "Project not found" });
+    return res.status(404).json({ error: "Prosjekt ikke funnet" });
   }
 
   if (req.role !== "ADMIN" && project.clientId !== req.userId) {
-    return res.status(403).json({ error: "Forbidden" });
+    return res.status(403).json({ error: "Ingen tilgang" });
   }
 
   req.project = project;

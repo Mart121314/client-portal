@@ -1,18 +1,18 @@
 <div class="auth-page">
   <form class="auth-card" (ngSubmit)="submit()">
-    <h1>Create an account</h1>
+    <h1>Opprett en konto</h1>
 
     @if (error()) {
       <p class="error">{{ error() }}</p>
     }
 
     <label>
-      Email
+      E-post
       <input type="email" name="email" [(ngModel)]="email" required autocomplete="email" />
     </label>
 
     <label>
-      Password
+      Passord
       <input
         type="password"
         name="password"
@@ -24,9 +24,9 @@
     </label>
 
     <button type="submit" [disabled]="loading()">
-      {{ loading() ? 'Creating account…' : 'Register' }}
+      {{ loading() ? 'Oppretter konto…' : 'Registrer deg' }}
     </button>
 
-    <p class="switch">Already have an account? <a routerLink="/login">Sign in</a></p>
+    <p class="switch">Har du allerede en konto? <a routerLink="/login">Logg inn</a></p>
   </form>
 </div>

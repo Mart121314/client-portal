@@ -18,7 +18,7 @@ export async function list(req: AuthRequest, res: Response) {
 export async function getOne(req: ProjectRequest, res: Response) {
   const project = await getProjectById(req.params.projectId);
   if (!project) {
-    return res.status(404).json({ error: "Project not found" });
+    return res.status(404).json({ error: "Prosjekt ikke funnet" });
   }
   res.json(sanitize(project, req.role === "ADMIN"));
 }
@@ -35,7 +35,7 @@ export async function update(req: ProjectRequest, res: Response) {
     eta,
   });
   if (!project) {
-    return res.status(404).json({ error: "Project not found" });
+    return res.status(404).json({ error: "Prosjekt ikke funnet" });
   }
   res.json(project);
 }

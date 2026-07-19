@@ -26,7 +26,7 @@ export class ForgotPassword {
       },
       error: () => {
         this.loading.set(false);
-        this.message.set('Something went wrong.');
+        this.message.set('Noe gikk galt.');
       },
     });
   }

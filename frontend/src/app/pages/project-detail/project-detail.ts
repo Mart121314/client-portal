@@ -9,12 +9,13 @@ import { Message } from '../../core/models/message.model';
 import { FileUpload } from '../../core/models/file-upload.model';
 import { Deliverable } from '../../core/models/deliverable.model';
 import { Invoice } from '../../core/models/invoice.model';
+import { StatusLabelPipe } from '../../core/pipes/status-label.pipe';
 
 type Tab = 'messages' | 'files' | 'deliverables' | 'invoices';
 
 @Component({
   selector: 'app-project-detail',
-  imports: [FormsModule, DatePipe],
+  imports: [FormsModule, DatePipe, StatusLabelPipe],
   templateUrl: './project-detail.html',
 })
 export class ProjectDetail implements OnInit {
@@ -92,7 +93,7 @@ export class ProjectDetail implements OnInit {
         this.project.set(project);
         this.isEditing.set(false);
       },
-      error: (err) => this.error.set(err?.error?.error ?? 'Could not update project'),
+      error: (err) => this.error.set(err?.error?.error ?? 'Kunne ikke oppdatere prosjekt'),
     });
   }
 
@@ -125,7 +126,7 @@ export class ProjectDetail implements OnInit {
         this.newMessage = '';
         this.loadMessages();
       },
-      error: (err) => this.error.set(err?.error?.error ?? 'Could not send message'),
+      error: (err) => this.error.set(err?.error?.error ?? 'Kunne ikke sende melding'),
     });
   }
 
@@ -136,7 +137,7 @@ export class ProjectDetail implements OnInit {
         this.newFile = { filename: '', url: '', mimeType: '', size: 0 };
         this.loadFiles();
       },
-      error: (err) => this.error.set(err?.error?.error ?? 'Could not add file'),
+      error: (err) => this.error.set(err?.error?.error ?? 'Kunne ikke legge til fil'),
     });
   }
 
@@ -147,7 +148,7 @@ export class ProjectDetail implements OnInit {
         this.newDeliverable = { title: '', description: '' };
         this.loadDeliverables();
       },
-      error: (err) => this.error.set(err?.error?.error ?? 'Could not create deliverable'),
+      error: (err) => this.error.set(err?.error?.error ?? 'Kunne ikke opprette leveranse'),
     });
   }
 
@@ -165,7 +166,7 @@ export class ProjectDetail implements OnInit {
         this.newInvoice = { amount: 0 };
         this.loadInvoices();
       },
-      error: (err) => this.error.set(err?.error?.error ?? 'Could not create invoice'),
+      error: (err) => this.error.set(err?.error?.error ?? 'Kunne ikke opprette faktura'),
     });
   }
 

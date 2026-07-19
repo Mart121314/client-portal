@@ -36,7 +36,7 @@ export class Login {
       },
       error: (err) => {
         this.loading.set(false);
-        this.error.set(err?.error?.error ?? 'Login failed');
+        this.error.set(err?.error?.error ?? 'Innlogging mislyktes');
       },
     });
   }

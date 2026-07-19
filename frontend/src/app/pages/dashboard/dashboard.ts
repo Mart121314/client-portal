@@ -6,10 +6,11 @@ import { ServiceRequestService } from '../../core/services/service-request.servi
 import { ProjectService } from '../../core/services/project.service';
 import { ServiceRequest } from '../../core/models/service-request.model';
 import { Project } from '../../core/models/project.model';
+import { StatusLabelPipe } from '../../core/pipes/status-label.pipe';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [FormsModule, RouterLink, DatePipe],
+  imports: [FormsModule, RouterLink, DatePipe, StatusLabelPipe],
   templateUrl: './dashboard.html',
 })
 export class Dashboard implements OnInit {
@@ -48,7 +49,7 @@ export class Dashboard implements OnInit {
       },
       error: (err) => {
         this.submitting.set(false);
-        this.error.set(err?.error?.error ?? 'Could not submit request');
+        this.error.set(err?.error?.error ?? 'Kunne ikke sende forespørsel');
       },
     });
   }

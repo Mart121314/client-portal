@@ -12,7 +12,7 @@ describe("auth flow", () => {
   it("rejects registration with an invalid email", async () => {
     const res = await request(app).post("/api/auth/register").send({ email: "not-an-email", password: "short" });
     expect(res.status).toBe(400);
-    expect(res.body.error).toBe("Validation failed");
+    expect(res.body.error).toBe("Validering mislyktes");
   });
 
   it("registers a new user", async () => {

@@ -36,7 +36,7 @@ export class Register {
       },
       error: (err) => {
         this.loading.set(false);
-        this.error.set(err?.error?.error ?? 'Registration failed');
+        this.error.set(err?.error?.error ?? 'Registrering mislyktes');
       },
     });
   }

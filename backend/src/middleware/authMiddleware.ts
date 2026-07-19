@@ -14,7 +14,7 @@ export async function requireAuth(req: AuthRequest, res: Response, next: NextFun
   const token = header?.startsWith("Bearer ") ? header.slice(7) : null;
 
   if (!token) {
-    return res.status(401).json({ error: "No token provided" });
+    return res.status(401).json({ error: "Ingen token oppgitt" });
   }
 
   try {
@@ -27,7 +27,7 @@ export async function requireAuth(req: AuthRequest, res: Response, next: NextFun
 
     const revoked = await prisma.revokedToken.findUnique({ where: { jti: payload.jti } });
     if (revoked) {
-      return res.status(401).json({ error: "Token has been revoked" });
+      return res.status(401).json({ error: "Token er tilbakekalt" });
     }
 
     req.userId = payload.sub;
@@ -36,14 +36,14 @@ export async function requireAuth(req: AuthRequest, res: Response, next: NextFun
     req.tokenExp = payload.exp;
     next();
   } catch {
-    res.status(401).json({ error: "Invalid or expired token" });
+    res.status(401).json({ error: "Ugyldig eller utløpt token" });
   }
 }
 
 export function requireRole(role: "ADMIN" | "CLIENT") {
   return (req: AuthRequest, res: Response, next: NextFunction) => {
     if (req.role !== role) {
-      return res.status(403).json({ error: "Forbidden" });
+      return res.status(403).json({ error: "Ingen tilgang" });
     }
     next();
   };

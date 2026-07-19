@@ -28,11 +28,11 @@ export async function list(req: AuthRequest, res: Response) {
 export async function getOne(req: AuthRequest, res: Response) {
   const request = await getServiceRequestById(req.params.id);
   if (!request) {
-    return res.status(404).json({ error: "Service request not found" });
+    return res.status(404).json({ error: "Tjenesteforespørsel ikke funnet" });
   }
 
   if (req.role !== "ADMIN" && request.clientId !== req.userId) {
-    return res.status(403).json({ error: "Forbidden" });
+    return res.status(403).json({ error: "Ingen tilgang" });
   }
 
   res.json(request);
@@ -42,7 +42,7 @@ export async function approve(req: AuthRequest, res: Response) {
   const { title } = req.body;
   const project = await approveServiceRequest(req.params.id, title);
   if (!project) {
-    return res.status(404).json({ error: "Service request not found" });
+    return res.status(404).json({ error: "Tjenesteforespørsel ikke funnet" });
   }
 
   res.json(project);

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const createDeliverableSchema = z.object({
-  title: z.string().min(1),
+  title: z.string().min(1, "Tittel er påkrevd"),
   description: z.string().optional(),
   dueDate: z.string().datetime().optional(),
 });

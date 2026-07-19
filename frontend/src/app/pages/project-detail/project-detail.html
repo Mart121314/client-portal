@@ -7,39 +7,39 @@
     <div class="card">
       <form class="inline-form" (ngSubmit)="saveEdit()">
         <label>
-          Title
+          Tittel
           <input type="text" name="editTitle" [(ngModel)]="editForm.title" required />
         </label>
         <label>
-          Description
+          Beskrivelse
           <input type="text" name="editDescription" [(ngModel)]="editForm.description" />
         </label>
         <label>
           Status
           <select name="editStatus" [(ngModel)]="editForm.status">
-            <option value="ACTIVE">Active</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="CANCELLED">Cancelled</option>
+            <option value="ACTIVE">Aktiv</option>
+            <option value="COMPLETED">Fullført</option>
+            <option value="CANCELLED">Avbrutt</option>
           </select>
         </label>
         <label>
-          Progress (%)
+          Fremdrift (%)
           <input type="number" name="editProgress" [(ngModel)]="editForm.progressPercent" min="0" max="100" />
         </label>
         <label>
-          ETA
+          Forventet ferdig
           <input type="date" name="editEta" [(ngModel)]="editForm.eta" />
         </label>
         <label>
-          Notes (visible to the customer)
+          Notater (synlig for kunden)
           <textarea name="editCustomerNotes" [(ngModel)]="editForm.customerNotes"></textarea>
         </label>
         <label>
-          Internal notes (admin only)
+          Interne notater (kun admin)
           <textarea name="editInternalNotes" [(ngModel)]="editForm.internalNotes"></textarea>
         </label>
-        <button type="submit">Save</button>
-        <button type="button" class="secondary" (click)="cancelEdit()">Cancel</button>
+        <button type="submit">Lagre</button>
+        <button type="button" class="secondary" (click)="cancelEdit()">Avbryt</button>
       </form>
     </div>
   } @else {
@@ -50,50 +50,50 @@
           <p class="subtitle">{{ p.description }}</p>
         }
         <p class="subtitle">
-          {{ p.progressPercent }}% done
+          {{ p.progressPercent }}% ferdig
           @if (p.eta) {
-            · ETA {{ p.eta | date: 'mediumDate' }}
+            · frist {{ p.eta | date: 'mediumDate' }}
           }
         </p>
         @if (p.status === 'CANCELLED' && p.cancelledAt) {
-          <p class="subtitle">This project will be permanently removed on {{ removalDate(p.cancelledAt) | date: 'mediumDate' }}.</p>
+          <p class="subtitle">Dette prosjektet blir permanent fjernet {{ removalDate(p.cancelledAt) | date: 'mediumDate' }}.</p>
         }
       </div>
       <div class="actions">
-        <span [class]="statusClass(p.status)">{{ p.status }}</span>
+        <span [class]="statusClass(p.status)">{{ p.status | statusLabel }}</span>
         @if (isAdmin()) {
-          <button class="secondary" (click)="startEdit()">Edit</button>
+          <button class="secondary" (click)="startEdit()">Rediger</button>
         }
       </div>
     </div>
 
     @if (p.customerNotes) {
       <div class="card">
-        <p class="subtitle">Notes</p>
+        <p class="subtitle">Notater</p>
         <p>{{ p.customerNotes }}</p>
       </div>
     }
 
     @if (isAdmin() && p.internalNotes) {
       <div class="card">
-        <p class="subtitle">Internal notes (admin only)</p>
+        <p class="subtitle">Interne notater (kun admin)</p>
         <p>{{ p.internalNotes }}</p>
       </div>
     }
   }
 
   <div class="tabs">
-    <button [class.active]="activeTab() === 'messages'" (click)="setTab('messages')">Messages</button>
-    <button [class.active]="activeTab() === 'files'" (click)="setTab('files')">Files</button>
-    <button [class.active]="activeTab() === 'deliverables'" (click)="setTab('deliverables')">Deliverables</button>
-    <button [class.active]="activeTab() === 'invoices'" (click)="setTab('invoices')">Invoices</button>
+    <button [class.active]="activeTab() === 'messages'" (click)="setTab('messages')">Meldinger</button>
+    <button [class.active]="activeTab() === 'files'" (click)="setTab('files')">Filer</button>
+    <button [class.active]="activeTab() === 'deliverables'" (click)="setTab('deliverables')">Leveranser</button>
+    <button [class.active]="activeTab() === 'invoices'" (click)="setTab('invoices')">Fakturaer</button>
   </div>
 
   @if (activeTab() === 'messages') {
     <div class="card">
       <form class="inline-form" (ngSubmit)="sendMessage()">
         <label>
-          Message
+          Melding
           <input type="text" name="newMessage" [(ngModel)]="newMessage" required />
         </label>
         <button type="submit">Send</button>
@@ -101,7 +101,7 @@
     </div>
 
     @if (messages().length === 0) {
-      <p class="empty-state">No messages yet.</p>
+      <p class="empty-state">Ingen meldinger ennå.</p>
     } @else {
       <div class="list">
         @for (message of messages(); track message.id) {
@@ -120,7 +120,7 @@
     <div class="card">
       <form class="inline-form" (ngSubmit)="addFile()">
         <label>
-          Filename
+          Filnavn
           <input type="text" name="filename" [(ngModel)]="newFile.filename" required />
         </label>
         <label>
@@ -132,15 +132,15 @@
           <input type="text" name="mimeType" [(ngModel)]="newFile.mimeType" required placeholder="application/pdf" />
         </label>
         <label>
-          Size (bytes)
+          Størrelse (bytes)
           <input type="number" name="size" [(ngModel)]="newFile.size" required />
         </label>
-        <button type="submit">Add file</button>
+        <button type="submit">Legg til fil</button>
       </form>
     </div>
 
     @if (files().length === 0) {
-      <p class="empty-state">No files yet.</p>
+      <p class="empty-state">Ingen filer ennå.</p>
     } @else {
       <div class="list">
         @for (file of files(); track file.id) {
@@ -160,20 +160,20 @@
       <div class="card">
         <form class="inline-form" (ngSubmit)="createDeliverable()">
           <label>
-            Title
+            Tittel
             <input type="text" name="deliverableTitle" [(ngModel)]="newDeliverable.title" required />
           </label>
           <label>
-            Description
+            Beskrivelse
             <input type="text" name="deliverableDescription" [(ngModel)]="newDeliverable.description" />
           </label>
-          <button type="submit">Add deliverable</button>
+          <button type="submit">Legg til leveranse</button>
         </form>
       </div>
     }
 
     @if (deliverables().length === 0) {
-      <p class="empty-state">No deliverables yet.</p>
+      <p class="empty-state">Ingen leveranser ennå.</p>
     } @else {
       <div class="list">
         @for (deliverable of deliverables(); track deliverable.id) {
@@ -185,10 +185,10 @@
               }
             </div>
             <div class="actions">
-              <span [class]="statusClass(deliverable.status)">{{ deliverable.status }}</span>
+              <span [class]="statusClass(deliverable.status)">{{ deliverable.status | statusLabel }}</span>
               @if (isAdmin()) {
                 <button class="secondary" (click)="toggleDeliverable(deliverable)">
-                  Mark {{ deliverable.status === 'PENDING' ? 'delivered' : 'pending' }}
+                  Merk som {{ deliverable.status === 'PENDING' ? 'levert' : 'venter' }}
                 </button>
               }
             </div>
@@ -203,31 +203,31 @@
       <div class="card">
         <form class="inline-form" (ngSubmit)="createInvoice()">
           <label>
-            Amount
+            Beløp
             <input type="number" name="invoiceAmount" [(ngModel)]="newInvoice.amount" required min="0" step="0.01" />
           </label>
-          <button type="submit">Add invoice</button>
+          <button type="submit">Legg til faktura</button>
         </form>
       </div>
     }
 
     @if (invoices().length === 0) {
-      <p class="empty-state">No invoices yet.</p>
+      <p class="empty-state">Ingen fakturaer ennå.</p>
     } @else {
       <div class="list">
         @for (invoice of invoices(); track invoice.id) {
           <div class="list-item">
             <div class="meta">
-              <span class="title">${{ invoice.amount }}</span>
+              <span class="title">{{ invoice.amount }} kr</span>
               @if (invoice.dueDate) {
-                <span class="subtitle">Due {{ invoice.dueDate | date: 'mediumDate' }}</span>
+                <span class="subtitle">Forfaller {{ invoice.dueDate | date: 'mediumDate' }}</span>
               }
             </div>
             <div class="actions">
-              <span [class]="statusClass(invoice.status)">{{ invoice.status }}</span>
+              <span [class]="statusClass(invoice.status)">{{ invoice.status | statusLabel }}</span>
               @if (isAdmin()) {
                 <button class="secondary" (click)="markInvoicePaid(invoice)">
-                  Mark {{ invoice.status === 'PAID' ? 'unpaid' : 'paid' }}
+                  Merk som {{ invoice.status === 'PAID' ? 'ubetalt' : 'betalt' }}
                 </button>
               }
             </div>
@@ -237,5 +237,5 @@
     }
   }
 } @else {
-  <p class="empty-state">Loading…</p>
+  <p class="empty-state">Laster…</p>
 }

@@ -4,16 +4,16 @@
     <div class="links">
       @if (authService.currentUser(); as user) {
         @if (user.role === 'CLIENT') {
-          <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+          <a routerLink="/dashboard" routerLinkActive="active">Oversikt</a>
         }
         @if (user.role === 'ADMIN') {
           <a routerLink="/admin" routerLinkActive="active">Admin</a>
         }
         <span class="switch">{{ user.email }}</span>
-        <button class="secondary" (click)="logout()">Log out</button>
+        <button class="secondary" (click)="logout()">Logg ut</button>
       } @else {
-        <a routerLink="/login" routerLinkActive="active">Sign in</a>
-        <a routerLink="/register" routerLinkActive="active">Register</a>
+        <a routerLink="/login" routerLinkActive="active">Logg inn</a>
+        <a routerLink="/register" routerLinkActive="active">Registrer deg</a>
       }
     </div>
   </nav>

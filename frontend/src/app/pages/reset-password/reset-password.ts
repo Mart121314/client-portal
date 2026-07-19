@@ -30,7 +30,7 @@ export class ResetPassword {
       },
       error: (err) => {
         this.loading.set(false);
-        this.error.set(err?.error?.error ?? 'Reset failed');
+        this.error.set(err?.error?.error ?? 'Tilbakestilling mislyktes');
       },
     });
   }
