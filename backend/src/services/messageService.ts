@@ -16,3 +16,16 @@ export async function getMessagesForProject(projectId: string) {
     include: senderSelect,
   });
 }
+
+export async function markProjectMessagesRead(projectId: string) {
+  const unread = await prisma.message.findMany({
+    where: { projectId, readAt: null, sender: { role: "CLIENT" } },
+    select: { id: true },
+  });
+  if (unread.length === 0) return;
+
+  await prisma.message.updateMany({
+    where: { id: { in: unread.map((m) => m.id) } },
+    data: { readAt: new Date() },
+  });
+}

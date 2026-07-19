@@ -55,6 +55,10 @@ export class ProjectService {
     return this.http.post<Message>(`${this.baseUrl}/${projectId}/messages`, { content });
   }
 
+  markMessagesRead(projectId: string): Observable<{ message: string }> {
+    return this.http.patch<{ message: string }>(`${this.baseUrl}/${projectId}/messages/read`, {});
+  }
+
   listDeliverables(projectId: string): Observable<Deliverable[]> {
     return this.http.get<Deliverable[]>(`${this.baseUrl}/${projectId}/deliverables`);
   }
