@@ -55,6 +55,9 @@
             · ETA {{ p.eta | date: 'mediumDate' }}
           }
         </p>
+        @if (p.status === 'CANCELLED' && p.cancelledAt) {
+          <p class="subtitle">This project will be permanently removed on {{ removalDate(p.cancelledAt) | date: 'mediumDate' }}.</p>
+        }
       </div>
       <div class="actions">
         <span [class]="statusClass(p.status)">{{ p.status }}</span>

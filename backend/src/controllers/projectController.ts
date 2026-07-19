@@ -34,5 +34,8 @@ export async function update(req: ProjectRequest, res: Response) {
     progressPercent,
     eta,
   });
+  if (!project) {
+    return res.status(404).json({ error: "Project not found" });
+  }
   res.json(project);
 }

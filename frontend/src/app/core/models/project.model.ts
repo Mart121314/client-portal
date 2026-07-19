@@ -9,6 +9,7 @@ export interface Project {
   internalNotes?: string | null;
   progressPercent: number;
   eta: string | null;
+  cancelledAt: string | null;
   clientId: string;
   serviceRequestId: string | null;
   createdAt: string;

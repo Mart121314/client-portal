@@ -179,4 +179,10 @@ export class ProjectDetail implements OnInit {
   statusClass(status: string): string {
     return `badge badge-${status.toLowerCase()}`;
   }
+
+  removalDate(cancelledAt: string): Date {
+    const date = new Date(cancelledAt);
+    date.setDate(date.getDate() + 30);
+    return date;
+  }
 }

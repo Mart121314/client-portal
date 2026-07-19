@@ -143,6 +143,9 @@
               @if (project.eta) {
                 · ETA {{ project.eta | date: 'mediumDate' }}
               }
+              @if (project.status === 'CANCELLED' && project.cancelledAt) {
+                · removed on {{ removalDate(project.cancelledAt) | date: 'mediumDate' }}
+              }
             </span>
           </div>
           <div class="actions">

@@ -87,6 +87,7 @@ model Project {
   internalNotes   String?
   progressPercent Int           @default(0)
   eta             DateTime?
+  cancelledAt     DateTime?
 
   client   User   @relation(fields: [clientId], references: [id])
   clientId String
@@ -110,7 +111,7 @@ model FileUpload {
   mimeType String
   size     Int
 
-  project   Project @relation(fields: [projectId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
 
   uploadedBy   User   @relation(fields: [uploadedById], references: [id])
@@ -123,7 +124,7 @@ model Message {
   id      String @id @default(uuid())
   content String
 
-  project   Project @relation(fields: [projectId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
 
   sender   User   @relation(fields: [senderId], references: [id])
@@ -139,7 +140,7 @@ model Deliverable {
   status      DeliverableStatus @default(PENDING)
   dueDate     DateTime?
 
-  project   Project @relation(fields: [projectId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
 
   createdAt DateTime @default(now())
@@ -152,7 +153,7 @@ model Invoice {
   status  InvoiceStatus @default(UNPAID)
   dueDate DateTime?
 
-  project   Project @relation(fields: [projectId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId String
 
   createdAt DateTime @default(now())

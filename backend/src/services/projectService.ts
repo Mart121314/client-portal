@@ -29,12 +29,21 @@ export async function updateProject(
     eta?: string | null;
   }
 ) {
+  const current = await prisma.project.findUnique({ where: { id } });
+  if (!current) return null;
+
+  let cancelledAt: Date | null | undefined;
+  if (data.status && data.status !== current.status) {
+    cancelledAt = data.status === "CANCELLED" ? new Date() : null;
+  }
+
   return prisma.project.update({
     where: { id },
     data: {
       ...data,
       progressPercent: data.progressPercent ?? undefined,
       eta: !data.eta ? (data.eta === undefined ? undefined : null) : new Date(data.eta),
+      cancelledAt,
     },
   });
 }
