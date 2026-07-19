@@ -108,7 +108,11 @@
           <div class="list-item">
             <div class="meta">
               <span class="title">{{ message.content }}</span>
-              <span class="subtitle">{{ message.createdAt | date: 'medium' }}</span>
+              <span class="subtitle">
+                {{ isMe(message.sender.id) ? 'Deg' : message.sender.email }}
+                ({{ message.sender.role === 'ADMIN' ? 'admin' : 'kunde' }})
+                · {{ message.createdAt | date: 'medium' }}
+              </span>
             </div>
           </div>
         }

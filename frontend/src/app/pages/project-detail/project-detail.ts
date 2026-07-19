@@ -186,4 +186,8 @@ export class ProjectDetail implements OnInit {
     date.setDate(date.getDate() + 30);
     return date;
   }
+
+  isMe(senderId: string): boolean {
+    return this.authService.currentUser()?.id === senderId;
+  }
 }
