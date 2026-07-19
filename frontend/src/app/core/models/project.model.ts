@@ -5,7 +5,8 @@ export interface Project {
   title: string;
   description: string | null;
   status: ProjectStatus;
-  notes: string | null;
+  customerNotes: string | null;
+  internalNotes?: string | null;
   progressPercent: number;
   eta: string | null;
   clientId: string;

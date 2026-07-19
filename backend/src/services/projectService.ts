@@ -23,16 +23,18 @@ export async function updateProject(
     title?: string;
     description?: string;
     status?: "ACTIVE" | "COMPLETED" | "CANCELLED";
-    notes?: string;
-    progressPercent?: number;
-    eta?: string;
+    customerNotes?: string;
+    internalNotes?: string;
+    progressPercent?: number | null;
+    eta?: string | null;
   }
 ) {
   return prisma.project.update({
     where: { id },
     data: {
       ...data,
-      eta: data.eta === undefined ? undefined : data.eta ? new Date(data.eta) : null,
+      progressPercent: data.progressPercent ?? undefined,
+      eta: !data.eta ? (data.eta === undefined ? undefined : null) : new Date(data.eta),
     },
   });
 }

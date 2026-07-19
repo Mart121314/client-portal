@@ -29,7 +29,8 @@ export class AdminDashboard implements OnInit {
     title: '',
     description: '',
     status: 'ACTIVE',
-    notes: '',
+    customerNotes: '',
+    internalNotes: '',
     progressPercent: 0,
     eta: '',
   };
@@ -98,7 +99,8 @@ export class AdminDashboard implements OnInit {
       title: project.title,
       description: project.description ?? '',
       status: project.status,
-      notes: project.notes ?? '',
+      customerNotes: project.customerNotes ?? '',
+      internalNotes: project.internalNotes ?? '',
       progressPercent: project.progressPercent,
       eta: project.eta ? project.eta.slice(0, 10) : '',
     };

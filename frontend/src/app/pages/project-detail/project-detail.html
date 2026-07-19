@@ -31,8 +31,12 @@
           <input type="date" name="editEta" [(ngModel)]="editForm.eta" />
         </label>
         <label>
-          Notes
-          <textarea name="editNotes" [(ngModel)]="editForm.notes"></textarea>
+          Notes (visible to the customer)
+          <textarea name="editCustomerNotes" [(ngModel)]="editForm.customerNotes"></textarea>
+        </label>
+        <label>
+          Internal notes (admin only)
+          <textarea name="editInternalNotes" [(ngModel)]="editForm.internalNotes"></textarea>
         </label>
         <button type="submit">Save</button>
         <button type="button" class="secondary" (click)="cancelEdit()">Cancel</button>
@@ -60,10 +64,17 @@
       </div>
     </div>
 
-    @if (isAdmin() && p.notes) {
+    @if (p.customerNotes) {
       <div class="card">
-        <p class="subtitle">Internal notes</p>
-        <p>{{ p.notes }}</p>
+        <p class="subtitle">Notes</p>
+        <p>{{ p.customerNotes }}</p>
+      </div>
+    }
+
+    @if (isAdmin() && p.internalNotes) {
+      <div class="card">
+        <p class="subtitle">Internal notes (admin only)</p>
+        <p>{{ p.internalNotes }}</p>
       </div>
     }
   }

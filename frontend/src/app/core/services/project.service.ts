@@ -27,9 +27,10 @@ export class ProjectService {
       title?: string;
       description?: string;
       status?: string;
-      notes?: string;
-      progressPercent?: number;
-      eta?: string;
+      customerNotes?: string;
+      internalNotes?: string;
+      progressPercent?: number | null;
+      eta?: string | null;
     },
   ): Observable<Project> {
     return this.http.patch<Project>(`${this.baseUrl}/${id}`, data);

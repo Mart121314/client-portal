@@ -123,8 +123,12 @@
               <input type="date" name="eta-{{ project.id }}" [(ngModel)]="projectEditForm.eta" />
             </label>
             <label>
-              Notes
-              <textarea name="notes-{{ project.id }}" [(ngModel)]="projectEditForm.notes"></textarea>
+              Notes (visible to the customer)
+              <textarea name="customer-notes-{{ project.id }}" [(ngModel)]="projectEditForm.customerNotes"></textarea>
+            </label>
+            <label>
+              Internal notes (admin only)
+              <textarea name="internal-notes-{{ project.id }}" [(ngModel)]="projectEditForm.internalNotes"></textarea>
             </label>
             <button type="submit">Save</button>
             <button type="button" class="secondary" (click)="cancelEditProject()">Cancel</button>
