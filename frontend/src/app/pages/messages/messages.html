@@ -1,0 +1,61 @@
+<div class="page-header">
+  <h1>Meldinger</h1>
+</div>
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+@if (openConversationProjectId(); as projectId) {
+  <div class="page-header">
+    <h2>{{ conversationTitleFor(projectId) }}</h2>
+    <button class="secondary" (click)="closeConversation()">← Tilbake til innboksen</button>
+  </div>
+
+  <div class="card">
+    <form class="inline-form" (ngSubmit)="sendConversationMessage()">
+      <label>
+        Melding
+        <input type="text" name="conversationMessage" [(ngModel)]="newConversationMessage" required />
+      </label>
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  @if (conversationMessages().length === 0) {
+    <p class="empty-state">Ingen meldinger ennå.</p>
+  } @else {
+    <div class="list">
+      @for (message of conversationMessages(); track message.id) {
+        <div class="list-item">
+          <div class="meta">
+            <span class="title">{{ message.content }}</span>
+            <span class="subtitle">
+              {{ message.sender?.role === 'ADMIN' ? 'Deg' : message.sender?.email }}
+              ({{ message.sender?.role === 'ADMIN' ? 'admin' : 'kunde' }})
+              · {{ message.createdAt | date: 'medium' }}
+            </span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+} @else if (conversations().length === 0) {
+  <p class="empty-state">Ingen meldinger ennå.</p>
+} @else {
+  <div class="list">
+    @for (conversation of conversations(); track conversation.projectId) {
+      <div class="list-item" (click)="openConversation(conversation)" style="cursor: pointer;">
+        <div class="meta">
+          <span class="title">{{ conversation.projectTitle }} · {{ conversation.clientEmail }}</span>
+          @if (conversation.lastMessage; as lastMessage) {
+            <span class="subtitle">{{ lastMessage.content }} · {{ lastMessage.createdAt | date: 'medium' }}</span>
+          }
+        </div>
+        @if (conversation.unreadCount > 0) {
+          <span class="badge badge-rejected">{{ conversation.unreadCount }}</span>
+        }
+      </div>
+    }
+  </div>
+}

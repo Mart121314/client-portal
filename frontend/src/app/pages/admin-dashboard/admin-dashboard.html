@@ -11,31 +11,13 @@
     Venter ({{ pendingRequests().length }})
   </button>
   <button [class.active]="activeTab() === 'APPROVED'" (click)="setTab('APPROVED')">
-    Godkjent ({{ approvedRequests().length }})
+    Godkjent ({{ activeProjects().length }})
   </button>
   <button [class.active]="activeTab() === 'REJECTED'" (click)="setTab('REJECTED')">
-    Avslått ({{ rejectedRequests().length }})
+    Avslått ({{ rejectedRequests().length + cancelledProjects().length }})
   </button>
-  <button class="tab-messages" [class.active]="activeTab() === 'MESSAGES'" (click)="setTab('MESSAGES')">
-    <svg
-      class="tab-icon"
-      viewBox="0 0 24 24"
-      width="18"
-      height="18"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    >
-      <path
-        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
-      />
-    </svg>
-    Meldinger
-    @if (unreadCount() > 0) {
-      <span class="badge badge-rejected">{{ unreadCount() }}</span>
-    }
+  <button [class.active]="activeTab() === 'COMPLETED'" (click)="setTab('COMPLETED')">
+    Fullført ({{ completedProjects().length }})
   </button>
   <button [class.active]="activeTab() === 'PROJECTS'" (click)="setTab('PROJECTS')">
     Alle prosjekter ({{ projects().length }})
@@ -70,99 +52,41 @@
 }
 
 @if (activeTab() === 'APPROVED') {
-  @if (approvedRequests().length === 0) {
-    <p class="empty-state">Ingen godkjente forespørsler ennå.</p>
+  @if (activeProjects().length === 0) {
+    <p class="empty-state">Ingen godkjente prosjekter ennå.</p>
   } @else {
-    <div class="list">
-      @for (request of approvedRequests(); track request.id) {
-        <div class="list-item">
-          <div class="meta">
-            <span class="title">{{ projectFor(request.id)?.title ?? request.description }}</span>
-            <span class="subtitle">Sendt inn {{ request.createdAt | date: 'medium' }}</span>
-          </div>
-          <div class="actions">
-            @if (projectFor(request.id); as project) {
-              <span [class]="statusClass(project.status)">{{ project.status | statusLabel }}</span>
-              <a [routerLink]="['/projects', project.id]">→</a>
-            }
-          </div>
-        </div>
-      }
-    </div>
+    <ng-container [ngTemplateOutlet]="projectList" [ngTemplateOutletContext]="{ $implicit: activeProjects() }" />
   }
 }
 
 @if (activeTab() === 'REJECTED') {
-  @if (rejectedRequests().length === 0) {
-    <p class="empty-state">Ingen avslåtte forespørsler.</p>
+  @if (rejectedRequests().length === 0 && cancelledProjects().length === 0) {
+    <p class="empty-state">Ingen avslåtte forespørsler eller prosjekter.</p>
   } @else {
-    <div class="list">
-      @for (request of rejectedRequests(); track request.id) {
-        <div class="list-item">
-          <div class="meta">
-            <span class="title">{{ request.description }}</span>
-            <span class="subtitle">Sendt inn {{ request.createdAt | date: 'medium' }}</span>
-          </div>
-          <button class="secondary" (click)="reopen(request)">Gjenåpne</button>
-        </div>
-      }
-    </div>
-  }
-}
-
-@if (activeTab() === 'MESSAGES') {
-  @if (openConversationProjectId(); as projectId) {
-    <div class="page-header">
-      <h2>{{ conversationTitleFor(projectId) }}</h2>
-      <button class="secondary" (click)="closeConversation()">← Tilbake til innboksen</button>
-    </div>
-
-    <div class="card">
-      <form class="inline-form" (ngSubmit)="sendConversationMessage()">
-        <label>
-          Melding
-          <input type="text" name="conversationMessage" [(ngModel)]="newConversationMessage" required />
-        </label>
-        <button type="submit">Send</button>
-      </form>
-    </div>
-
-    @if (conversationMessages().length === 0) {
-      <p class="empty-state">Ingen meldinger ennå.</p>
-    } @else {
+    @if (rejectedRequests().length > 0) {
       <div class="list">
-        @for (message of conversationMessages(); track message.id) {
+        @for (request of rejectedRequests(); track request.id) {
           <div class="list-item">
             <div class="meta">
-              <span class="title">{{ message.content }}</span>
-              <span class="subtitle">
-                {{ message.sender?.role === 'ADMIN' ? 'Deg' : message.sender?.email }}
-                ({{ message.sender?.role === 'ADMIN' ? 'admin' : 'kunde' }})
-                · {{ message.createdAt | date: 'medium' }}
-              </span>
+              <span class="title">{{ request.description }}</span>
+              <span class="subtitle">Sendt inn {{ request.createdAt | date: 'medium' }}</span>
             </div>
+            <button class="secondary" (click)="reopen(request)">Gjenåpne</button>
           </div>
         }
       </div>
     }
-  } @else if (conversations().length === 0) {
-    <p class="empty-state">Ingen meldinger ennå.</p>
+    @if (cancelledProjects().length > 0) {
+      <ng-container [ngTemplateOutlet]="projectList" [ngTemplateOutletContext]="{ $implicit: cancelledProjects() }" />
+    }
+  }
+}
+
+@if (activeTab() === 'COMPLETED') {
+  @if (completedProjects().length === 0) {
+    <p class="empty-state">Ingen fullførte prosjekter ennå.</p>
   } @else {
-    <div class="list">
-      @for (conversation of conversations(); track conversation.projectId) {
-        <div class="list-item" (click)="openConversation(conversation)" style="cursor: pointer;">
-          <div class="meta">
-            <span class="title">{{ conversation.projectTitle }} · {{ conversation.clientEmail }}</span>
-            @if (conversation.lastMessage; as lastMessage) {
-              <span class="subtitle">{{ lastMessage.content }} · {{ lastMessage.createdAt | date: 'medium' }}</span>
-            }
-          </div>
-          @if (conversation.unreadCount > 0) {
-            <span class="badge badge-rejected">{{ conversation.unreadCount }}</span>
-          }
-        </div>
-      }
-    </div>
+    <ng-container [ngTemplateOutlet]="projectList" [ngTemplateOutletContext]="{ $implicit: completedProjects() }" />
   }
 }
 
@@ -171,75 +95,79 @@
   @if (projects().length === 0) {
     <p class="empty-state">Ingen prosjekter ennå.</p>
   } @else {
-    <div class="list">
-      @for (project of projects(); track project.id) {
-        @if (editingProjectId() === project.id) {
-          <div class="card">
-            <form class="inline-form" (ngSubmit)="saveEditProject(project.id)">
-              <label>
-                Tittel
-                <input type="text" name="title-{{ project.id }}" [(ngModel)]="projectEditForm.title" required />
-              </label>
-              <label>
-                Beskrivelse
-                <input type="text" name="description-{{ project.id }}" [(ngModel)]="projectEditForm.description" />
-              </label>
-              <label>
-                Status
-                <select name="status-{{ project.id }}" [(ngModel)]="projectEditForm.status">
-                  <option value="ACTIVE">Aktiv</option>
-                  <option value="COMPLETED">Fullført</option>
-                  <option value="CANCELLED">Avbrutt</option>
-                </select>
-              </label>
-              <label>
-                Fremdrift (%)
-                <input
-                  type="number"
-                  name="progress-{{ project.id }}"
-                  [(ngModel)]="projectEditForm.progressPercent"
-                  min="0"
-                  max="100"
-                />
-              </label>
-              <label>
-                Forventet ferdig
-                <input type="date" name="eta-{{ project.id }}" [(ngModel)]="projectEditForm.eta" />
-              </label>
-              <label>
-                Notater (synlig for kunden)
-                <textarea name="customer-notes-{{ project.id }}" [(ngModel)]="projectEditForm.customerNotes"></textarea>
-              </label>
-              <label>
-                Interne notater (kun admin)
-                <textarea name="internal-notes-{{ project.id }}" [(ngModel)]="projectEditForm.internalNotes"></textarea>
-              </label>
-              <button type="submit">Lagre</button>
-              <button type="button" class="secondary" (click)="cancelEditProject()">Avbryt</button>
-            </form>
-          </div>
-        } @else {
-          <div class="list-item">
-            <div class="meta">
-              <span class="title">{{ project.title }}</span>
-              <span class="subtitle">
-                {{ project.progressPercent }}% ferdig
-                @if (project.eta) {
-                  · frist {{ project.eta | date: 'mediumDate' }}
-                }
-                @if (project.status === 'CANCELLED' && project.cancelledAt) {
-                  · fjernes {{ removalDate(project.cancelledAt) | date: 'mediumDate' }}
-                }
-              </span>
-            </div>
-            <div class="actions">
-              <span [class]="statusClass(project.status)">{{ project.status | statusLabel }}</span>
-              <button class="secondary" (click)="startEditProject(project)">Rediger</button>
-              <a [routerLink]="['/projects', project.id]">→</a>
-            </div>
-          </div>
-        }
-      }
-    </div>
+    <ng-container [ngTemplateOutlet]="projectList" [ngTemplateOutletContext]="{ $implicit: projects() }" />
   }
 }
+
+<ng-template #projectList let-list>
+  <div class="list">
+    @for (project of list; track project.id) {
+      @if (editingProjectId() === project.id) {
+        <div class="card">
+          <form class="inline-form" (ngSubmit)="saveEditProject(project.id)">
+            <label>
+              Tittel
+              <input type="text" name="title-{{ project.id }}" [(ngModel)]="projectEditForm.title" required />
+            </label>
+            <label>
+              Beskrivelse
+              <input type="text" name="description-{{ project.id }}" [(ngModel)]="projectEditForm.description" />
+            </label>
+            <label>
+              Status
+              <select name="status-{{ project.id }}" [(ngModel)]="projectEditForm.status">
+                <option value="ACTIVE">Aktiv</option>
+                <option value="COMPLETED">Fullført</option>
+                <option value="CANCELLED">Avbrutt</option>
+              </select>
+            </label>
+            <label>
+              Fremdrift (%)
+              <input
+                type="number"
+                name="progress-{{ project.id }}"
+                [(ngModel)]="projectEditForm.progressPercent"
+                min="0"
+                max="100"
+              />
+            </label>
+            <label>
+              Forventet ferdig
+              <input type="date" name="eta-{{ project.id }}" [(ngModel)]="projectEditForm.eta" />
+            </label>
+            <label>
+              Notater (synlig for kunden)
+              <textarea name="customer-notes-{{ project.id }}" [(ngModel)]="projectEditForm.customerNotes"></textarea>
+            </label>
+            <label>
+              Interne notater (kun admin)
+              <textarea name="internal-notes-{{ project.id }}" [(ngModel)]="projectEditForm.internalNotes"></textarea>
+            </label>
+            <button type="submit">Lagre</button>
+            <button type="button" class="secondary" (click)="cancelEditProject()">Avbryt</button>
+          </form>
+        </div>
+      } @else {
+        <div class="list-item">
+          <div class="meta">
+            <span class="title">{{ project.title }}</span>
+            <span class="subtitle">
+              {{ project.progressPercent }}% ferdig
+              @if (project.eta) {
+                · frist {{ project.eta | date: 'mediumDate' }}
+              }
+              @if (project.status === 'CANCELLED' && project.cancelledAt) {
+                · fjernes {{ removalDate(project.cancelledAt) | date: 'mediumDate' }}
+              }
+            </span>
+          </div>
+          <div class="actions">
+            <span [class]="statusClass(project.status)">{{ project.status | statusLabel }}</span>
+            <button class="secondary" (click)="startEditProject(project)">Rediger</button>
+            <a [routerLink]="['/projects', project.id]">→</a>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</ng-template>

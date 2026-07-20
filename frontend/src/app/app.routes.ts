@@ -30,6 +30,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/project-detail/project-detail').then((m) => m.ProjectDetail),
   },
   {
+    path: 'messages',
+    canActivate: [roleGuard('ADMIN')],
+    loadComponent: () => import('./pages/messages/messages').then((m) => m.Messages),
+  },
+  {
     path: 'users',
     canActivate: [roleGuard('ADMIN')],
     loadComponent: () => import('./pages/users/users').then((m) => m.Users),
