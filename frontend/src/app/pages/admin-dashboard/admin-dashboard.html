@@ -1,42 +1,44 @@
-<div class="page-header">
-  <h1>Admin-oversikt</h1>
-</div>
-
-@if (error()) {
-  <p class="error">{{ error() }}</p>
-}
-
-<h2>Faktura</h2>
-@if (invoices().length === 0) {
-  <p class="empty-state">Ingen fakturaer ennå.</p>
-} @else {
-  <div class="list">
-    @for (invoice of invoices(); track invoice.id) {
-      <div class="list-item">
-        <div class="meta">
-          <span class="title">
-            {{ invoice.project?.title ?? 'Ukjent prosjekt' }} · {{ invoice.amount }} kr
-          </span>
-          <span class="subtitle">
-            {{ invoice.project?.client?.email }}
-            @if (invoice.dueDate) {
-              · forfaller {{ invoice.dueDate | date: 'mediumDate' }}
-            }
-          </span>
-        </div>
-        <div class="actions">
-          <span [class]="statusClass(invoice.status)">{{ invoice.status | statusLabel }}</span>
-          <button class="secondary" (click)="toggleInvoicePaid(invoice)">
-            {{ invoice.status === 'PAID' ? 'Merk ubetalt' : 'Merk betalt' }}
-          </button>
-          @if (invoice.project) {
-            <a [routerLink]="['/projects', invoice.project.id]">→</a>
-          }
-        </div>
-      </div>
-    }
+<div class="full-bleed">
+  <div class="page-header">
+    <h1>Admin-oversikt</h1>
   </div>
-}
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <h2>Faktura</h2>
+  @if (invoices().length === 0) {
+    <p class="empty-state">Ingen fakturaer ennå.</p>
+  } @else {
+    <div class="list">
+      @for (invoice of invoices(); track invoice.id) {
+        <div class="list-item">
+          <div class="meta">
+            <span class="title">
+              {{ invoice.project?.title ?? 'Ukjent prosjekt' }} · {{ invoice.amount }} kr
+            </span>
+            <span class="subtitle">
+              {{ invoice.project?.client?.email }}
+              @if (invoice.dueDate) {
+                · forfaller {{ invoice.dueDate | date: 'mediumDate' }}
+              }
+            </span>
+          </div>
+          <div class="actions">
+            <span [class]="statusClass(invoice.status)">{{ invoice.status | statusLabel }}</span>
+            <button class="secondary" (click)="toggleInvoicePaid(invoice)">
+              {{ invoice.status === 'PAID' ? 'Merk ubetalt' : 'Merk betalt' }}
+            </button>
+            @if (invoice.project) {
+              <a [routerLink]="['/projects', invoice.project.id]">→</a>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
 
 <div class="tabs">
   <button [class.active]="activeTab() === 'PENDING'" (click)="setTab('PENDING')">
