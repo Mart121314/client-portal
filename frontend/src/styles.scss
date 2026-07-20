@@ -237,6 +237,12 @@ button.danger {
   padding: 0.5rem;
 }
 
+.messages-panel-body--thread {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
 .messages-panel-form {
   display: flex;
   gap: 0.5rem;

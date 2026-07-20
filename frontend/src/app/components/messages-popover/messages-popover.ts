@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ElementRef, HostListener } from '@angular/core';
+import { Component, inject, signal, OnInit, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { ConversationService } from '../../core/services/conversation.service';
@@ -15,6 +15,8 @@ export class MessagesPopover implements OnInit {
   private conversationService = inject(ConversationService);
   private projectService = inject(ProjectService);
   private elementRef = inject(ElementRef);
+
+  @ViewChild('threadBody') threadBody?: ElementRef<HTMLDivElement>;
 
   isOpen = signal(false);
   conversations = signal<Conversation[]>([]);
@@ -54,6 +56,7 @@ export class MessagesPopover implements OnInit {
     this.openConversationProjectId.set(conversation.projectId);
     this.projectService.listMessages(conversation.projectId).subscribe((messages) => {
       this.conversationMessages.set(messages);
+      this.scrollToBottom();
     });
 
     if (conversation.unreadCount > 0) {
@@ -76,7 +79,10 @@ export class MessagesPopover implements OnInit {
     this.projectService.addMessage(projectId, this.newConversationMessage).subscribe({
       next: () => {
         this.newConversationMessage = '';
-        this.projectService.listMessages(projectId).subscribe((messages) => this.conversationMessages.set(messages));
+        this.projectService.listMessages(projectId).subscribe((messages) => {
+          this.conversationMessages.set(messages);
+          this.scrollToBottom();
+        });
         this.loadConversations();
       },
       error: (err) => this.error.set(err?.error?.error ?? 'Kunne ikke sende melding'),
@@ -85,5 +91,14 @@ export class MessagesPopover implements OnInit {
 
   conversationTitleFor(projectId: string): string {
     return this.conversations().find((c) => c.projectId === projectId)?.projectTitle ?? '';
+  }
+
+  private scrollToBottom(): void {
+    setTimeout(() => {
+      const element = this.threadBody?.nativeElement;
+      if (element) {
+        element.scrollTop = element.scrollHeight;
+      }
+    });
   }
 }

@@ -38,7 +38,7 @@
       }
 
       @if (openConversationProjectId(); as projectId) {
-        <div class="messages-panel-body">
+        <div class="messages-panel-body messages-panel-body--thread" #threadBody>
           @if (conversationMessages().length === 0) {
             <p class="empty-state">Ingen meldinger ennå.</p>
           } @else {
