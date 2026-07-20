@@ -1,0 +1,36 @@
+<div class="page-header">
+  <h1>Brukere</h1>
+</div>
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+@if (users().length === 0) {
+  <p class="empty-state">Ingen brukere ennå.</p>
+} @else {
+  <div class="list">
+    @for (user of users(); track user.id) {
+      <div class="list-item">
+        <div class="meta">
+          <span class="title">{{ user.email }}</span>
+          @if (user.createdAt) {
+            <span class="subtitle">Opprettet {{ user.createdAt | date: 'medium' }}</span>
+          }
+        </div>
+        <div class="actions">
+          <span [class]="user.role === 'ADMIN' ? 'badge badge-approved' : 'badge badge-pending'">
+            {{ user.role === 'ADMIN' ? 'Admin' : 'Kunde' }}
+          </span>
+          @if (user.isSuperAdmin) {
+            <span class="badge badge-completed">Hovedadmin</span>
+          }
+          @if (isSuperAdmin() && user.role !== 'ADMIN') {
+            <button class="secondary" (click)="promoteUser(user)">Gjør til admin</button>
+          }
+          <a [routerLink]="['/users', user.id]">→</a>
+        </div>
+      </div>
+    }
+  </div>
+}

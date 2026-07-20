@@ -109,8 +109,8 @@
             <div class="meta">
               <span class="title">{{ message.content }}</span>
               <span class="subtitle">
-                {{ isMe(message.sender.id) ? 'Deg' : message.sender.email }}
-                ({{ message.sender.role === 'ADMIN' ? 'admin' : 'kunde' }})
+                {{ isMe(message.sender?.id) ? 'Deg' : message.sender?.email }}
+                ({{ message.sender?.role === 'ADMIN' ? 'admin' : 'kunde' }})
                 · {{ message.createdAt | date: 'medium' }}
               </span>
             </div>

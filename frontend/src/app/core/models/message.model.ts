@@ -3,6 +3,7 @@ export interface Message {
   content: string;
   projectId: string;
   senderId: string;
-  sender: { id: string; email: string; role: 'ADMIN' | 'CLIENT' };
+  sender?: { id: string; email: string; role: 'ADMIN' | 'CLIENT' };
+  project?: { id: string; title: string };
   createdAt: string;
 }

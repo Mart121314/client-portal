@@ -29,5 +29,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./pages/project-detail/project-detail').then((m) => m.ProjectDetail),
   },
+  {
+    path: 'users',
+    canActivate: [roleGuard('ADMIN')],
+    loadComponent: () => import('./pages/users/users').then((m) => m.Users),
+  },
+  {
+    path: 'users/:id',
+    canActivate: [roleGuard('ADMIN')],
+    loadComponent: () => import('./pages/user-detail/user-detail').then((m) => m.UserDetail),
+  },
   { path: '**', redirectTo: 'login' },
 ];

@@ -8,6 +8,7 @@
         }
         @if (user.role === 'ADMIN') {
           <a routerLink="/admin" routerLinkActive="active">Admin</a>
+          <a routerLink="/users" routerLinkActive="active">Brukere</a>
         }
         <span class="switch">{{ user.email }}</span>
         <button class="secondary" (click)="logout()">Logg ut</button>

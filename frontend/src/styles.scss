@@ -307,6 +307,16 @@ button.danger {
   border-bottom-color: var(--color-primary);
 }
 
+.tabs button.tab-messages {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tab-icon {
+  flex-shrink: 0;
+}
+
 .inline-form {
   display: flex;
   gap: 0.6rem;

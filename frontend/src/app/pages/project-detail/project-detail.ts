@@ -187,7 +187,7 @@ export class ProjectDetail implements OnInit {
     return date;
   }
 
-  isMe(senderId: string): boolean {
-    return this.authService.currentUser()?.id === senderId;
+  isMe(senderId: string | undefined): boolean {
+    return !!senderId && this.authService.currentUser()?.id === senderId;
   }
 }

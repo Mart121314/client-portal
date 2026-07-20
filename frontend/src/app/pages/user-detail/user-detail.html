@@ -1,0 +1,54 @@
+@if (user(); as u) {
+  <div class="page-header">
+    <div>
+      <h1>{{ u.email }}</h1>
+      <p class="subtitle">
+        {{ u.role === 'ADMIN' ? 'Admin' : 'Kunde' }}
+        @if (u.isSuperAdmin) {
+          · Hovedadmin
+        }
+      </p>
+    </div>
+    <a routerLink="/users">← Tilbake til brukere</a>
+  </div>
+
+  <h2>Prosjekthistorikk</h2>
+  @if (projects().length === 0) {
+    <p class="empty-state">Ingen prosjekter ennå.</p>
+  } @else {
+    <div class="list">
+      @for (project of projects(); track project.id) {
+        <a class="list-item" [routerLink]="['/projects', project.id]">
+          <div class="meta">
+            <span class="title">{{ project.title }}</span>
+            <span class="subtitle">Oppdatert {{ project.updatedAt | date: 'medium' }}</span>
+          </div>
+          <span [class]="statusClass(project.status)">{{ project.status | statusLabel }}</span>
+        </a>
+      }
+    </div>
+  }
+
+  <h2>Meldinger sendt</h2>
+  @if (messages().length === 0) {
+    <p class="empty-state">Ingen meldinger sendt ennå.</p>
+  } @else {
+    <div class="list">
+      @for (message of messages(); track message.id) {
+        <div class="list-item">
+          <div class="meta">
+            <span class="title">{{ message.content }}</span>
+            <span class="subtitle">
+              @if (message.project) {
+                {{ message.project.title }} ·
+              }
+              {{ message.createdAt | date: 'medium' }}
+            </span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+} @else {
+  <p class="empty-state">Laster…</p>
+}
