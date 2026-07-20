@@ -48,3 +48,11 @@ export function requireRole(role: "ADMIN" | "CLIENT") {
     next();
   };
 }
+
+export async function requireSuperAdmin(req: AuthRequest, res: Response, next: NextFunction) {
+  const user = await prisma.user.findUnique({ where: { id: req.userId } });
+  if (!user?.isSuperAdmin) {
+    return res.status(403).json({ error: "Ingen tilgang" });
+  }
+  next();
+}

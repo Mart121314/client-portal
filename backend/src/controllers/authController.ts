@@ -14,7 +14,7 @@ export async function me(req: AuthRequest, res: Response) {
   if (!user) {
     return res.status(404).json({ error: "Bruker ikke funnet" });
   }
-  res.json({ id: user.id, email: user.email, role: user.role });
+  res.json({ id: user.id, email: user.email, role: user.role, isSuperAdmin: user.isSuperAdmin });
 }
 
 export async function register(req: Request, res: Response) {

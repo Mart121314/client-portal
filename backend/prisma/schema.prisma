@@ -26,6 +26,7 @@ model User {
 
   isActive  Boolean @default(true)
   isVerified Boolean  @default(false)
+  isSuperAdmin Boolean @default(false)
 
   resetToken String? 
   resetTokenExpiry DateTime? 

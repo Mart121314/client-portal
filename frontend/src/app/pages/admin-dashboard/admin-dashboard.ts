@@ -5,13 +5,16 @@ import { DatePipe } from '@angular/common';
 import { ServiceRequestService } from '../../core/services/service-request.service';
 import { ProjectService } from '../../core/services/project.service';
 import { ConversationService } from '../../core/services/conversation.service';
+import { UserService } from '../../core/services/user.service';
+import { AuthService } from '../../core/services/auth.service';
 import { ServiceRequest } from '../../core/models/service-request.model';
 import { Project } from '../../core/models/project.model';
 import { Conversation } from '../../core/models/conversation.model';
 import { Message } from '../../core/models/message.model';
+import { User } from '../../core/models/user.model';
 import { StatusLabelPipe } from '../../core/pipes/status-label.pipe';
 
-type DashboardTab = 'PENDING' | 'APPROVED' | 'REJECTED' | 'MESSAGES';
+type DashboardTab = 'PENDING' | 'APPROVED' | 'REJECTED' | 'MESSAGES' | 'USERS';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -22,6 +25,8 @@ export class AdminDashboard implements OnInit {
   private serviceRequestService = inject(ServiceRequestService);
   private projectService = inject(ProjectService);
   private conversationService = inject(ConversationService);
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
 
   requests = signal<ServiceRequest[]>([]);
   projects = signal<Project[]>([]);
@@ -46,6 +51,9 @@ export class AdminDashboard implements OnInit {
     eta: '',
   };
 
+  users = signal<User[]>([]);
+  isSuperAdmin = computed(() => this.authService.currentUser()?.isSuperAdmin === true);
+
   pendingRequests = computed(() => this.requests().filter((r) => r.status === 'PENDING'));
   approvedRequests = computed(() => this.requests().filter((r) => r.status === 'APPROVED'));
   rejectedRequests = computed(() => this.requests().filter((r) => r.status === 'REJECTED'));
@@ -62,6 +70,20 @@ export class AdminDashboard implements OnInit {
       this.openConversationProjectId.set(null);
       this.loadConversations();
     }
+    if (tab === 'USERS') {
+      this.loadUsers();
+    }
+  }
+
+  loadUsers(): void {
+    this.userService.list().subscribe((users) => this.users.set(users));
+  }
+
+  promoteUser(user: User): void {
+    this.userService.promote(user.id).subscribe({
+      next: () => this.loadUsers(),
+      error: (err) => this.error.set(err?.error?.error ?? 'Kunne ikke gjøre bruker til admin'),
+    });
   }
 
   loadRequests(): void {
