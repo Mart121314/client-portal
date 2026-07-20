@@ -11,7 +11,7 @@ import { Project } from '../../core/models/project.model';
 import { Invoice } from '../../core/models/invoice.model';
 import { StatusLabelPipe } from '../../core/pipes/status-label.pipe';
 
-type DashboardTab = 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'PROJECTS' | 'INVOICES';
+type DashboardTab = 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'PROJECTS';
 
 @Component({
   selector: 'app-admin-dashboard',
