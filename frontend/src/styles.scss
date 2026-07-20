@@ -191,11 +191,12 @@ button.danger {
 }
 
 .messages-panel {
-  position: absolute;
-  top: calc(100% + 0.75rem);
-  right: 0;
-  width: min(960px, calc(100vw - 3rem));
-  max-height: calc(100vh - 8rem);
+  position: fixed;
+  top: 4.25rem;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 400px;
+  max-width: calc(100vw - 3rem);
   display: flex;
   flex-direction: column;
   background: var(--color-surface);
