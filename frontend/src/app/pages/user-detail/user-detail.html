@@ -12,6 +12,28 @@
     <a routerLink="/users">← Tilbake til brukere</a>
   </div>
 
+  @if (isSuperAdmin()) {
+    <div class="card">
+      <h2 style="margin-top: 0;">Endre passord</h2>
+      <p class="hint">
+        Passord lagres kryptert og kan ikke vises — du kan sette et nytt passord for brukeren her.
+      </p>
+      @if (passwordError()) {
+        <p class="error">{{ passwordError() }}</p>
+      }
+      @if (passwordSuccess()) {
+        <p class="hint">{{ passwordSuccess() }}</p>
+      }
+      <form class="inline-form" (ngSubmit)="changePassword()">
+        <label>
+          Nytt passord
+          <input type="password" name="newPassword" [(ngModel)]="newPassword" minlength="8" required />
+        </label>
+        <button type="submit">Oppdater passord</button>
+      </form>
+    </div>
+  }
+
   <h2>Prosjekthistorikk</h2>
   @if (projects().length === 0) {
     <p class="empty-state">Ingen prosjekter ennå.</p>

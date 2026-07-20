@@ -30,4 +30,8 @@ export class UserService {
   promote(id: string): Observable<User> {
     return this.http.patch<User>(`${this.baseUrl}/${id}/promote`, {});
   }
+
+  setPassword(id: string, newPassword: string): Observable<{ message: string }> {
+    return this.http.patch<{ message: string }>(`${this.baseUrl}/${id}/password`, { newPassword });
+  }
 }

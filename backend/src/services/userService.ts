@@ -1,4 +1,7 @@
+import bcrypt from "bcrypt";
 import { prisma } from "../database/prisma";
+
+const SALT_ROUNDS = 10;
 
 export async function listUsers() {
   return prisma.user.findMany({
@@ -33,5 +36,13 @@ export async function getMessagesForUser(userId: string) {
     where: { senderId: userId },
     orderBy: { createdAt: "desc" },
     include: { project: { select: { id: true, title: true } } },
+  });
+}
+
+export async function setUserPassword(userId: string, newPassword: string) {
+  const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+  return prisma.user.update({
+    where: { id: userId },
+    data: { passwordHash },
   });
 }

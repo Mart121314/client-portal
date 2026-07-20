@@ -6,6 +6,7 @@ import {
   getUserById,
   getProjectsForUser,
   getMessagesForUser,
+  setUserPassword,
 } from "../services/userService";
 
 export async function list(_req: AuthRequest, res: Response) {
@@ -34,4 +35,9 @@ export async function getProjects(req: AuthRequest, res: Response) {
 export async function getMessages(req: AuthRequest, res: Response) {
   const messages = await getMessagesForUser(req.params.id);
   res.json(messages);
+}
+
+export async function setPassword(req: AuthRequest, res: Response) {
+  await setUserPassword(req.params.id, req.body.newPassword);
+  res.json({ message: "Passord oppdatert" });
 }
