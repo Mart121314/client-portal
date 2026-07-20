@@ -5,11 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { ServiceRequestService } from '../../core/services/service-request.service';
 import { ProjectService } from '../../core/services/project.service';
+import { InvoiceService } from '../../core/services/invoice.service';
 import { ServiceRequest } from '../../core/models/service-request.model';
 import { Project } from '../../core/models/project.model';
+import { Invoice } from '../../core/models/invoice.model';
 import { StatusLabelPipe } from '../../core/pipes/status-label.pipe';
 
-type DashboardTab = 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'PROJECTS';
+type DashboardTab = 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'PROJECTS' | 'INVOICES';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -19,9 +21,11 @@ type DashboardTab = 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'PROJECT
 export class AdminDashboard implements OnInit {
   private serviceRequestService = inject(ServiceRequestService);
   private projectService = inject(ProjectService);
+  private invoiceService = inject(InvoiceService);
 
   requests = signal<ServiceRequest[]>([]);
   projects = signal<Project[]>([]);
+  invoices = signal<Invoice[]>([]);
   activeTab = signal<DashboardTab>('PENDING');
   private titleDrafts = new Map<string, string>();
   error = signal<string | null>(null);
@@ -47,6 +51,7 @@ export class AdminDashboard implements OnInit {
   ngOnInit(): void {
     this.loadRequests();
     this.loadProjects();
+    this.loadInvoices();
   }
 
   setTab(tab: DashboardTab): void {
@@ -59,6 +64,15 @@ export class AdminDashboard implements OnInit {
 
   loadProjects(): void {
     this.projectService.list().subscribe((projects) => this.projects.set(projects));
+  }
+
+  loadInvoices(): void {
+    this.invoiceService.listAll().subscribe((invoices) => this.invoices.set(invoices));
+  }
+
+  toggleInvoicePaid(invoice: Invoice): void {
+    const nextStatus = invoice.status === 'PAID' ? 'UNPAID' : 'PAID';
+    this.invoiceService.updateStatus(invoice.id, nextStatus).subscribe(() => this.loadInvoices());
   }
 
   titleFor(requestId: string): string {

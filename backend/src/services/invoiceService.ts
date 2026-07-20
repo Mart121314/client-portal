@@ -17,6 +17,13 @@ export async function getInvoicesForProject(projectId: string) {
   });
 }
 
+export async function getAllInvoices() {
+  return prisma.invoice.findMany({
+    orderBy: { createdAt: "desc" },
+    include: { project: { select: { id: true, title: true, client: { select: { email: true } } } } },
+  });
+}
+
 export async function updateInvoiceStatus(id: string, status: "UNPAID" | "PAID" | "OVERDUE") {
   return prisma.invoice.update({ where: { id }, data: { status } });
 }
