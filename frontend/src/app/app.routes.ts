@@ -25,6 +25,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin-dashboard/admin-dashboard').then((m) => m.AdminDashboard),
   },
   {
+    path: 'invoices',
+    canActivate: [roleGuard('ADMIN')],
+    loadComponent: () => import('./pages/invoices/invoices').then((m) => m.Invoices),
+  },
+  {
     path: 'projects/:id',
     canActivate: [authGuard],
     loadComponent: () => import('./pages/project-detail/project-detail').then((m) => m.ProjectDetail),
