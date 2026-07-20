@@ -1,42 +1,21 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs';
+import { Component, OnInit, inject } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
-import { ConversationService } from './core/services/conversation.service';
+import { MessagesPopover } from './components/messages-popover/messages-popover';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, MessagesPopover],
   templateUrl: './app.html',
 })
 export class App implements OnInit {
   protected authService = inject(AuthService);
-  private conversationService = inject(ConversationService);
   private router = inject(Router);
-
-  unreadCount = signal(0);
 
   ngOnInit(): void {
     if (this.authService.isLoggedIn() && !this.authService.currentUser()) {
-      this.authService.loadCurrentUser().subscribe({
-        next: (user) => {
-          if (user.role === 'ADMIN') this.loadUnreadCount();
-        },
-        error: () => {},
-      });
-    } else if (this.authService.currentUser()?.role === 'ADMIN') {
-      this.loadUnreadCount();
+      this.authService.loadCurrentUser().subscribe({ error: () => {} });
     }
-
-    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
-      if (this.authService.currentUser()?.role === 'ADMIN') {
-        this.loadUnreadCount();
-      }
-    });
-  }
-
-  loadUnreadCount(): void {
-    this.conversationService.unreadCount().subscribe((res) => this.unreadCount.set(res.count));
   }
 
   logout(): void {

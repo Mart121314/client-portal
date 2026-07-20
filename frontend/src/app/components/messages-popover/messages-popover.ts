@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ElementRef, HostListener } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { ConversationService } from '../../core/services/conversation.service';
@@ -7,14 +7,16 @@ import { Conversation } from '../../core/models/conversation.model';
 import { Message } from '../../core/models/message.model';
 
 @Component({
-  selector: 'app-messages',
+  selector: 'app-messages-popover',
   imports: [FormsModule, DatePipe],
-  templateUrl: './messages.html',
+  templateUrl: './messages-popover.html',
 })
-export class Messages implements OnInit {
+export class MessagesPopover implements OnInit {
   private conversationService = inject(ConversationService);
   private projectService = inject(ProjectService);
+  private elementRef = inject(ElementRef);
 
+  isOpen = signal(false);
   conversations = signal<Conversation[]>([]);
   unreadCount = signal(0);
   openConversationProjectId = signal<string | null>(null);
@@ -23,8 +25,21 @@ export class Messages implements OnInit {
   error = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.loadConversations();
     this.loadUnreadCount();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.isOpen() && !this.elementRef.nativeElement.contains(event.target as Node)) {
+      this.isOpen.set(false);
+    }
+  }
+
+  toggle(): void {
+    this.isOpen.update((open) => !open);
+    if (this.isOpen()) {
+      this.loadConversations();
+    }
   }
 
   loadUnreadCount(): void {

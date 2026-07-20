@@ -1,0 +1,95 @@
+<div class="messages-popover">
+  <button class="nav-messages" (click)="toggle()">
+    <svg
+      class="tab-icon"
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path
+        d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+      />
+    </svg>
+    Meldinger
+    @if (unreadCount() > 0) {
+      <span class="badge badge-rejected">{{ unreadCount() }}</span>
+    }
+  </button>
+
+  @if (isOpen()) {
+    <div class="messages-panel">
+      <div class="messages-panel-header">
+        @if (openConversationProjectId(); as projectId) {
+          <button type="button" class="icon-button" (click)="closeConversation()" aria-label="Tilbake">←</button>
+          <h3>{{ conversationTitleFor(projectId) }}</h3>
+        } @else {
+          <h3>Meldinger</h3>
+        }
+        <button type="button" class="icon-button" (click)="toggle()" aria-label="Lukk">×</button>
+      </div>
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+
+      @if (openConversationProjectId(); as projectId) {
+        <div class="messages-panel-body">
+          @if (conversationMessages().length === 0) {
+            <p class="empty-state">Ingen meldinger ennå.</p>
+          } @else {
+            <div class="list">
+              @for (message of conversationMessages(); track message.id) {
+                <div class="list-item">
+                  <div class="meta">
+                    <span class="title">{{ message.content }}</span>
+                    <span class="subtitle">
+                      {{ message.sender?.role === 'ADMIN' ? 'Deg' : message.sender?.email }}
+                      · {{ message.createdAt | date: 'short' }}
+                    </span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+        <form class="messages-panel-form" (ngSubmit)="sendConversationMessage()">
+          <input
+            type="text"
+            name="conversationMessage"
+            [(ngModel)]="newConversationMessage"
+            placeholder="Skriv en melding…"
+            required
+          />
+          <button type="submit">Send</button>
+        </form>
+      } @else {
+        <div class="messages-panel-body">
+          @if (conversations().length === 0) {
+            <p class="empty-state">Ingen meldinger ennå.</p>
+          } @else {
+            <div class="list">
+              @for (conversation of conversations(); track conversation.projectId) {
+                <div class="list-item" (click)="openConversation(conversation)" style="cursor: pointer;">
+                  <div class="meta">
+                    <span class="title">{{ conversation.projectTitle }} · {{ conversation.clientEmail }}</span>
+                    @if (conversation.lastMessage; as lastMessage) {
+                      <span class="subtitle">{{ lastMessage.content }}</span>
+                    }
+                  </div>
+                  @if (conversation.unreadCount > 0) {
+                    <span class="badge badge-rejected">{{ conversation.unreadCount }}</span>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
