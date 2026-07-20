@@ -77,12 +77,15 @@
       @for (request of approvedRequests(); track request.id) {
         <div class="list-item">
           <div class="meta">
-            <span class="title">{{ request.description }}</span>
+            <span class="title">{{ projectFor(request.id)?.title ?? request.description }}</span>
             <span class="subtitle">Sendt inn {{ request.createdAt | date: 'medium' }}</span>
           </div>
-          @if (projectFor(request.id); as project) {
-            <a [routerLink]="['/projects', project.id]">→</a>
-          }
+          <div class="actions">
+            @if (projectFor(request.id); as project) {
+              <span [class]="statusClass(project.status)">{{ project.status | statusLabel }}</span>
+              <a [routerLink]="['/projects', project.id]">→</a>
+            }
+          </div>
         </div>
       }
     </div>
