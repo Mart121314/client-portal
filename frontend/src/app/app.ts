@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { AuthService } from './core/services/auth.service';
+import { ThemeService } from './core/services/theme.service';
 import { MessagesPopover } from './components/messages-popover/messages-popover';
 
 @Component({
@@ -10,6 +11,7 @@ import { MessagesPopover } from './components/messages-popover/messages-popover'
 })
 export class App implements OnInit {
   protected authService = inject(AuthService);
+  protected themeService = inject(ThemeService);
   private router = inject(Router);
 
   ngOnInit(): void {
