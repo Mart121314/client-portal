@@ -145,7 +145,7 @@
   }
 }
 
-@if (activeTab() !== 'MESSAGES') {
+@if (activeTab() !== 'MESSAGES' && activeTab() !== 'REJECTED') {
   <h2>Prosjekter</h2>
   @if (projects().length === 0) {
     <p class="empty-state">Ingen prosjekter ennå.</p>
