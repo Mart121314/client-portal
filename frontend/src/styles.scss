@@ -1,47 +1,52 @@
 :root {
-  --color-bg: #f6f7fb;
-  --color-surface: #ffffff;
-  --color-surface-alt: #eef0f6;
-  --color-border: #e1e4ec;
-  --color-text: #14161f;
-  --color-text-muted: #676e7d;
-  --color-primary: #4f46e5;
-  --color-primary-hover: #4338ca;
-  --color-primary-soft: #eef2ff;
-  --color-danger: #dc2626;
-  --color-danger-bg: #fef2f2;
-  --color-success: #16a34a;
-  --color-success-bg: #f0fdf4;
-  --color-warning: #b45309;
-  --color-warning-bg: #fff7e6;
-  --color-info: #2f4bd6;
-  --color-info-bg: #e7ebff;
+  --color-bg: #eef2ea;
+  --color-surface: #dde6de;
+  --color-surface-alt: #d1ddd2;
+  --color-border: #c3d1c4;
+  --color-text: #1c1e1b;
+  --color-text-muted: #69725f;
+  --color-primary: #3f6b4a;
+  --color-primary-hover: #335939;
+  --color-primary-soft: rgba(63, 107, 74, 0.18);
+  --color-danger: #a13f34;
+  --color-danger-bg: #f3e2df;
+  --color-success: #2f5f3d;
+  --color-success-bg: #c9dbcb;
+  --color-warning: #8a6d1f;
+  --color-warning-bg: #efe7d2;
+  --color-info: #3f5a6b;
+  --color-info-bg: #cfe0e6;
 
   --radius: 10px;
   --radius-sm: 6px;
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.1);
+  --shadow-sm: 0 1px 2px rgba(28, 30, 27, 0.05);
+  --shadow-md: 0 10px 30px rgba(28, 30, 27, 0.08);
+
+  --font-heading:
+    Georgia,
+    'Times New Roman',
+    serif;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --color-bg: #0d0f14;
-    --color-surface: #171a21;
-    --color-surface-alt: #1f232c;
-    --color-border: #2a2f3a;
-    --color-text: #e7e9ee;
-    --color-text-muted: #9aa1b0;
-    --color-primary: #818cf8;
-    --color-primary-hover: #a5b4fc;
-    --color-primary-soft: rgba(129, 140, 248, 0.16);
-    --color-danger: #f87171;
-    --color-danger-bg: rgba(248, 113, 113, 0.14);
-    --color-success: #4ade80;
-    --color-success-bg: rgba(74, 222, 128, 0.14);
-    --color-warning: #fbbf24;
-    --color-warning-bg: rgba(251, 191, 36, 0.14);
-    --color-info: #93a6ff;
-    --color-info-bg: rgba(147, 166, 255, 0.16);
+    --color-bg: #14170f;
+    --color-surface: #1c2018;
+    --color-surface-alt: #242920;
+    --color-border: #333a2c;
+    --color-text: #eef2ea;
+    --color-text-muted: #9aa891;
+    --color-primary: #83b184;
+    --color-primary-hover: #9dc59e;
+    --color-primary-soft: rgba(131, 177, 132, 0.16);
+    --color-danger: #e0968a;
+    --color-danger-bg: rgba(224, 150, 138, 0.14);
+    --color-success: #8fc298;
+    --color-success-bg: rgba(143, 194, 152, 0.14);
+    --color-warning: #d8bf6e;
+    --color-warning-bg: rgba(216, 191, 110, 0.14);
+    --color-info: #8fb0c9;
+    --color-info-bg: rgba(143, 176, 201, 0.16);
 
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
     --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -49,23 +54,23 @@
 }
 
 :root[data-theme='dark'] {
-  --color-bg: #0d0f14;
-  --color-surface: #171a21;
-  --color-surface-alt: #1f232c;
-  --color-border: #2a2f3a;
-  --color-text: #e7e9ee;
-  --color-text-muted: #9aa1b0;
-  --color-primary: #818cf8;
-  --color-primary-hover: #a5b4fc;
-  --color-primary-soft: rgba(129, 140, 248, 0.16);
-  --color-danger: #f87171;
-  --color-danger-bg: rgba(248, 113, 113, 0.14);
-  --color-success: #4ade80;
-  --color-success-bg: rgba(74, 222, 128, 0.14);
-  --color-warning: #fbbf24;
-  --color-warning-bg: rgba(251, 191, 36, 0.14);
-  --color-info: #93a6ff;
-  --color-info-bg: rgba(147, 166, 255, 0.16);
+  --color-bg: #14170f;
+  --color-surface: #1c2018;
+  --color-surface-alt: #242920;
+  --color-border: #333a2c;
+  --color-text: #eef2ea;
+  --color-text-muted: #9aa891;
+  --color-primary: #83b184;
+  --color-primary-hover: #9dc59e;
+  --color-primary-soft: rgba(131, 177, 132, 0.16);
+  --color-danger: #e0968a;
+  --color-danger-bg: rgba(224, 150, 138, 0.14);
+  --color-success: #8fc298;
+  --color-success-bg: rgba(143, 194, 152, 0.14);
+  --color-warning: #d8bf6e;
+  --color-warning-bg: rgba(216, 191, 110, 0.14);
+  --color-info: #8fb0c9;
+  --color-info-bg: rgba(143, 176, 201, 0.16);
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -95,6 +100,8 @@ body {
 h1,
 h2,
 h3 {
+  font-family: var(--font-heading);
+  font-weight: 600;
   letter-spacing: -0.01em;
 }
 
