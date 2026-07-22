@@ -119,20 +119,27 @@ a {
 
 .auth-card {
   width: 100%;
-  max-width: 360px;
+  max-width: 460px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
-  padding: 2rem;
+  padding: 2.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .auth-card h1 {
   margin: 0 0 0.5rem;
-  font-size: 1.4rem;
+  font-size: 1.75rem;
+}
+
+.auth-card .intro {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text-muted);
 }
 
 .auth-card form {
